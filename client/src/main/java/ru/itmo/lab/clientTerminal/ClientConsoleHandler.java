@@ -2,6 +2,7 @@ package ru.itmo.lab.clientTerminal;
 
 import ru.itmo.lab.myEnums.Commands;
 import ru.itmo.lab.myExceptions.CommandException;
+import ru.itmo.lab.network.NetworkManager;
 import ru.itmo.lab.network.Request;
 import ru.itmo.lab.terminal.GenericConsoleHandler;
 import ru.itmo.lab.terminal.*;
@@ -27,7 +28,7 @@ import java.util.Scanner;
  *   <li>Управление жизненным циклом консольного приложения</li>
  * </ul>
  */
-public class ClientConsoleHandler extends GenericConsoleHandler<Invoker>
+public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
     implements IO_Handler
 {
     private final Scanner scanner = new Scanner(System.in);
@@ -51,8 +52,20 @@ public class ClientConsoleHandler extends GenericConsoleHandler<Invoker>
         print("\n         Введите команду");
         print("=====================================");
         input = ioHandler.readline();
-
-
+        if( input.trim().toLowerCase().equals("exit") )
+        {
+            stop();
+            return stop;
+        }
+        Request request = buildRequest(input);
+        try
+        {
+            provider.network(request);
+        }
+        catch( Exception e )
+        {
+            printError("");
+        }
 
         return stop;
     }
@@ -124,11 +137,12 @@ public class ClientConsoleHandler extends GenericConsoleHandler<Invoker>
                     {
                         throw new CommandException("Поле ввода пусто!");
                     }
+                    updated_name = updated_name.toLowerCase();
                     for(FieldDescriptor element : Lab5FieldDescriptor.UPDATED_FIELDS)
                     {
                         if( updated_name.toLowerCase().equals(element.name().toLowerCase()) )
                         {
-                            if( updated_name.equals("Group Admin") )
+                            if( updated_name.equals("group admin") )
                             {
                                 printInfo(element.request());
                                 // Создание нового админа
