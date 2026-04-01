@@ -1,0 +1,13 @@
+package ru.itmo.lab.myEnums;
+
+/**
+ * Содержит все возможные варианты семестров учебных групп
+ */
+public enum Semester
+{
+    FIRST,
+    SECOND,
+    THIRD,
+    FIFTH,
+    EIGHTH;
+}
