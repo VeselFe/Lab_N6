@@ -17,7 +17,7 @@ public class Client
         SocketChannel channel = connectToServer();
         if( channel != null )
         {
-            System.out.println("Сервер подключился!");
+            System.out.println("Сервер подключен!");
         }
     }
 
@@ -44,7 +44,7 @@ public class Client
                 conection = true;
                 console.printInfo("Успешно подключено к серверу!");
             }
-            catch( IOException e ) // ReWrite!
+            catch( IOException e )
             {
                 console.printError("Сервер недоступен. Повторная попытка через " + (connectionDelay / 1000) + " секунд...");
                 try
