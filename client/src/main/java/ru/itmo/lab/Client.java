@@ -1,6 +1,6 @@
 package ru.itmo.lab;
 
-import ru.itmo.lab.terminal.Lab6ConsoleHandler;
+import ru.itmo.lab.clientTerminal.ClientConsoleHandler;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -25,7 +25,8 @@ public class Client
     {
         SocketChannel socketChannel = null;
         boolean conection = false;
-        Lab6ConsoleHandler console = new Lab6ConsoleHandler(null );
+        ///  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ClientConsoleHandler console = new ClientConsoleHandler(null );
         console.printInfo("Подключение к серверу " + host + ":" + port);
 
         while( !conection )
@@ -39,7 +40,7 @@ public class Client
                 while( !socketChannel.finishConnect() )
                 {
                     console.printRequest(".");
-                    Thread.sleep(500); // Узнать что это и зачем
+                    Thread.sleep(500);
                 }
                 conection = true;
                 console.printInfo("Успешно подключено к серверу!");

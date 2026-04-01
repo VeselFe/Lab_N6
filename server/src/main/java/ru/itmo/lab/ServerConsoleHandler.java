@@ -1,5 +1,7 @@
-package ru.itmo.lab.terminal;
+package ru.itmo.lab;
 
+import ru.itmo.lab.terminal.GenericConsoleHandler;
+import ru.itmo.lab.terminal.*;
 import ru.itmo.lab.interfaces.IO_Handler;
 import ru.itmo.lab.model.Person;
 import ru.itmo.lab.model.StudyGroup;
@@ -21,20 +23,35 @@ import java.util.Scanner;
  *   <li>Управление жизненным циклом консольного приложения</li>
  * </ul>
  */
-public class Lab6ConsoleHandler extends GenericConsoleHandler<Invoker>
-    implements IO_Handler
+public class ServerConsoleHandler extends GenericConsoleHandler<Invoker>
+        implements IO_Handler
 {
     private final Scanner scanner = new Scanner(System.in);
     private boolean stop = false;
 
-    public Lab6ConsoleHandler(Invoker invoker )
+    public ServerConsoleHandler()
     {
-        super(invoker);
+    }
+
+    @Override
+    public void start()
+    {
+        /// Логика работы
+    }
+
+    protected String getInput(  )
+    {
+        return "";
     }
 
     @Override
     protected boolean executing( String input )
     {
+        if(invoker == null)
+        {
+            printError("Не инициализирован исполнитель команд!");
+            return stop;
+        }
         invoker.executeCommand(input);
         return stop;
     }
@@ -51,6 +68,7 @@ public class Lab6ConsoleHandler extends GenericConsoleHandler<Invoker>
     {
         printCurLine( request );
     }
+    public void techPrint( String techMessege ) { printCurLine( techMessege ); }
     public String readline()
     {
         return scanner.nextLine();

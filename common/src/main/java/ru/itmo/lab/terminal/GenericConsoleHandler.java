@@ -1,36 +1,38 @@
 package ru.itmo.lab.terminal;
 
-import java.util.Scanner;
+import ru.itmo.lab.interfaces.IO_Handler;import ru.itmo.lab.interfaces.IO_Handler;import java.util.Scanner;
 
 /**
  * Абстрактный базовый класс для обработки консольного ввода команд.
  *
  * Предоставляет общую логику интерактивного консольного интерфейса для
  * различных типов инвокаторов команд. Наследники реализуют специфическую
- * логику выполнения команд через абстрактный метод {@link #executing(String)}.
+ * логику выполнения команд через абстрактный метод {@link #executing()}.
  */
 abstract public class GenericConsoleHandler<T>
 {
-    protected final T invoker;
+    protected T provider;
+    protected IO_Handler ioHandler;
     private boolean exit = false;
 
-    public GenericConsoleHandler( T newInvoker )
+    public GenericConsoleHandler( IO_Handler newIO )
     {
-        invoker = newInvoker;
+        ioHandler = newIO;
+    }
+
+    public void setProvider( T provider )
+    {
+        this.provider = provider;
     }
 
     public void start()
     {
-        Scanner scanner = new Scanner(System.in);
-
         welcomMessage();
         while (!exit)
         {
-            print("\n         Введите команду");
-            print("=====================================");
-            String input = getInput(scanner);
-            try {
-                exit = executing(input);
+            try
+            {
+                exit = executing();
             }
             catch( Exception e )
             {
@@ -49,5 +51,5 @@ abstract public class GenericConsoleHandler<T>
     protected void error( String messege ) { print("Ошибка: " + messege); }
     protected void welcomMessage() { print("Go!"); }
 
-    abstract protected boolean executing( String input );
+    abstract protected boolean executing();
 }

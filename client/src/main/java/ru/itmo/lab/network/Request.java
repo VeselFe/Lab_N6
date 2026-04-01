@@ -1,5 +1,6 @@
 package ru.itmo.lab.network;
 
+import ru.itmo.lab.model.Person;
 import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.myExceptions.CommandException;
 
@@ -9,8 +10,10 @@ public class Request implements Serializable
 {
     private final String commandType;
     private final String argument;
+    private final String updatedField;
     private final Long idArg;
     private final StudyGroup group;
+    private final Person admin;
 
     private Request( Builder builder )
     {
@@ -18,14 +21,18 @@ public class Request implements Serializable
         this.argument = builder.argument;
         this.idArg = builder.idArg;
         this.group = builder.group;
+        this.admin = builder.admin;
+        this.updatedField = builder.updatedField;
     }
 
     public static class Builder
     {
         private String commandType = null;
+        private String updatedField = null;
         private String argument = null;
         private Long idArg = null;
         private StudyGroup group = null;
+        private Person admin = null;
 
         public Request buildRequest()
         {
@@ -52,6 +59,16 @@ public class Request implements Serializable
             argument = newArgument;
             return this;
         }
+        public Builder setUpdatedField( String newUField )
+        {
+            if( newUField.isEmpty() )
+            {
+                throw new CommandException("Некорректный аргумент команды!");
+            }
+
+            updatedField = newUField;
+            return this;
+        }
         public Builder setID( Long newID )
         {
             if( newID == null )
@@ -70,6 +87,16 @@ public class Request implements Serializable
             }
 
             group = newGroup;
+            return this;
+        }
+        public Builder setPerson( Person newPerson )
+        {
+            if( newPerson == null )
+            {
+                throw new CommandException("Некорректный аргумент команды!");
+            }
+
+            admin = newPerson;
             return this;
         }
     }

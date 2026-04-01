@@ -1,6 +1,9 @@
 package ru.itmo.lab;
 
-import ru.itmo.lab.terminal.Terminal;
+import ru.itmo.lab.generators.BasicGenerator;
+import ru.itmo.lab.manager.CollectionManager;
+import ru.itmo.lab.manager.Invoker;
+import ru.itmo.lab.model.StudyGroup;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,34 +17,43 @@ public class Server
 
     public static void main(String[] args)
     {
+        /// Серверный менеджер коллекцией
+        CollectionManager mainCollection = CollectionManager.createCollection();
+        StudyGroup.setIdGenerator( new BasicGenerator(mainCollection) );
+        Invoker invoker = new Invoker( mainCollection );
+        ServerConsoleHandler console = new ServerConsoleHandler();
+        console.setInvoker(invoker);
+
+        /// Сеть
         System.out.println("Сервер запустился. Порт: " + port);
         try( ServerSocket serverSocket = new ServerSocket(port) )
         {
             while( true )
             {
-                Terminal.techPrint("Ожидание подключения клиента...");
+                console.techPrint("Ожидание подключения клиента...");
                 Socket clientSocket = serverSocket.accept();
-                Terminal.printInfo("Клиент подключен: " + clientSocket.getInetAddress());
+                console.printInfo("Клиент подключен: " + clientSocket.getInetAddress());
 
-                handleClient(clientSocket);
+                handleClient(clientSocket, console);
             }
         }
         catch( IOException e )
         {
-            Terminal.printError(e.getMessage());
+            console.printError(e.getMessage());
         }
     }
 
-    public static void handleClient( Socket clientSocket )
+    public static void handleClient( Socket clientSocket, ServerConsoleHandler console )
     {
         try( InputStream input = clientSocket.getInputStream();
              OutputStream output = clientSocket.getOutputStream(); )
         {
-            Terminal.printInfo("Потоки ввода-вывода инициализированы.");
+            console.printInfo("Потоки ввода-вывода инициализированы.");
+            // логика обработки поступившей информации
         }
         catch( IOException e )
         {
-            Terminal.printError("Ошибка при обмене данными с клиентом: " + e.getMessage());
+            console.printError("Ошибка при обмене данными с клиентом: " + e.getMessage());
         }
     }
 }
