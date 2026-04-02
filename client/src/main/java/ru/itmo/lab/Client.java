@@ -1,6 +1,7 @@
 package ru.itmo.lab;
 
 import ru.itmo.lab.clientTerminal.ClientConsoleHandler;
+import ru.itmo.lab.network.NetworkManager;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -17,7 +18,28 @@ public class Client
         SocketChannel channel = connectToServer();
         if( channel != null )
         {
-            System.out.println("Сервер подключен!");
+            try
+            {
+                ClientConsoleHandler console = new ClientConsoleHandler();
+                NetworkManager networkManager = new NetworkManager(channel);
+                console.setProvider(networkManager);
+                console.start();
+            }
+            catch( Exception e )
+            {
+                System.out.println("Ошибка при работе приложения: " + e.getMessage());
+            }
+            finally
+            {
+                try
+                {
+                    channel.close();
+                }
+                catch( IOException e )
+                {
+                    System.err.println("Ошибка при закрытии канала.");
+                }
+            }
         }
     }
 
@@ -26,7 +48,7 @@ public class Client
         SocketChannel socketChannel = null;
         boolean conection = false;
         ///  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ClientConsoleHandler console = new ClientConsoleHandler(null );
+        ClientConsoleHandler console = new ClientConsoleHandler();
         console.printInfo("Подключение к серверу " + host + ":" + port);
 
         while( !conection )

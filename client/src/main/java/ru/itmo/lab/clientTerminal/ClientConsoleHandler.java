@@ -35,9 +35,9 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
     private boolean stop = false;
     private String input;
 
-    public ClientConsoleHandler( IO_Handler ioHandler )
+    public ClientConsoleHandler()
     {
-        super(ioHandler);
+        super(null);
     }
 
     @Override
