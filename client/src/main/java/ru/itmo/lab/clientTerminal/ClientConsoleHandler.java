@@ -40,13 +40,13 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
     }
 
     @Override
-    protected void welcomMessage()
+    public void welcomMessage()
     {
         print("Клиентское приложение запущено. Введите 'help' для просмотра возможных команд.");
     }
 
     @Override
-    protected boolean executing()
+    public boolean executing()
     {
         print("\n         Введите команду");
         print("=====================================");
@@ -60,6 +60,7 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
         try
         {
             provider.network(request);
+
         }
         catch( Exception e )
         {
@@ -73,9 +74,9 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
     {
         print( "<i> " + message );
     }
-    public void printError( String messege )
+    public void printError( String message )
     {
-        print("<Ошибка>\n" + messege);
+        print("<Ошибка>\n" + message);
     }
     public void printRequest( String request )
     {
@@ -112,6 +113,7 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
             switch (name)
             {
                 case "insert_element" -> {
+                    if( args.length != 2 ) throw new CommandException("Ошибка получения аргументов: <команда> <аргумент");
                     Long id = Long.parseLong(args[1]);
                     StudyGroup newGroup = readNewStudyGroup();
                     return new Request.Builder()
@@ -121,6 +123,7 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
                             .buildRequest();
                 }
                 case "update_id" -> {
+                    if( args.length != 2 ) throw new CommandException("Ошибка получения аргументов: <команда> <аргумент");
                     Long id = Long.parseLong(args[1]);
                     printInfo("Какой параметр Вы хотите обновить?\n" +
                             "===========================================");
@@ -167,10 +170,22 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
                 }
                 default -> {
                     if( Commands.find(name) == null ) throw new IllegalArgumentException("Неизвестная команда!");
-                    return new Request.Builder()
-                            .setCommandType(name)
-                            .setArgument(args[1])
-                            .buildRequest();
+                    Request.Builder clientRequestBuilder = new Request.Builder();
+                    clientRequestBuilder.setCommandType(name);
+                    if( args.length == 2 )
+                    {
+                        try
+                        {
+                            Long id = Long.parseLong( args[1] );
+                            clientRequestBuilder.setID(id);
+                        }
+                        catch( NumberFormatException e )
+                        {
+                            clientRequestBuilder.setArgument(args[1]);
+                        }
+                    }
+
+                    return clientRequestBuilder.buildRequest();
                 }
             }
             return null;

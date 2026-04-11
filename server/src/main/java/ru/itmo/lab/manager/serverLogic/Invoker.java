@@ -50,10 +50,10 @@ public class Invoker implements InvokerActions
         addCommand("update_id", new UpdateIdCommand(ManagersCollection));
         addCommand("remove_id", new RemoveCommand(ManagersCollection));
         addCommand("clear", new ClearCommand(ManagersCollection));
-        addCommand("execute_script", new ExecuteScriptCommand(ManagersCollection));
 
-        addCommand("save", new SaveCommand(ManagersCollection, "SavedCollection.txt"));
-        addCommand("exit", new ExitCommand());
+        //addCommand("execute_script", new ExecuteScriptCommand(ManagersCollection));
+        //addCommand("save", new SaveCommand(ManagersCollection, "SavedCollection.txt"));
+        //addCommand("exit", new ExitCommand());
 
         addCommand("remove_greater", new RemoveGreater(ManagersCollection));
         addCommand("remove_lower ", new RemoveLower(ManagersCollection));

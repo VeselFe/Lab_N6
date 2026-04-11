@@ -40,7 +40,6 @@ public class Server
                 console.techPrint("Ожидание подключения клиента...");
                 Socket clientSocket = serverSocket.accept();
                 console.printInfo("Клиент подключен: " + clientSocket.getInetAddress());
-
                 handleClient(clientSocket, console, invoker);
             }
         }
@@ -63,7 +62,8 @@ public class Server
 
             // обрабатываем
             Response response = CommandProccessor.ProcessRequest(request, invoker);
-
+            System.out.println(response.isSuccess());
+            System.out.println(response.getMessage());
             // отправляем обратно ответ
             //sendResponse(clientSocket, response);
 

@@ -22,23 +22,6 @@ abstract public class GenericConsoleHandler<T>
         this.provider = provider;
     }
 
-    public void start()
-    {
-        welcomMessage();
-        while (!exit)
-        {
-            try
-            {
-                exit = executing();
-            }
-            catch( Exception e )
-            {
-                error(e.getMessage());
-            }
-        }
-
-    }
-
     protected String getInput( Scanner scanner )
     {
         return scanner.nextLine();

@@ -15,29 +15,35 @@ public class Client
 
     public static void main(String[] args)
     {
-        SocketChannel channel = connectToServer();
-        if( channel != null )
+        ClientConsoleHandler console = new ClientConsoleHandler();
+        boolean exit = false;
+
+        while( true )
         {
-            try
-            {
-                ClientConsoleHandler console = new ClientConsoleHandler();
-                NetworkManager networkManager = new NetworkManager(channel);
-                console.setProvider(networkManager);
-                console.start();
-            }
-            catch( Exception e )
-            {
-                System.out.println("Ошибка при работе приложения: " + e.getMessage());
-            }
-            finally
+            SocketChannel channel = connectToServer();
+            if( channel != null )
             {
                 try
                 {
-                    channel.close();
+                    NetworkManager networkManager = new NetworkManager(channel);
+                    console.setProvider(networkManager);
+                    console.welcomMessage();
+                    exit = console.executing();
                 }
-                catch( IOException e )
+                catch( Exception e )
                 {
-                    System.err.println("Ошибка при закрытии канала.");
+                    System.out.println("Ошибка при работе приложения: " + e.getMessage());
+                }
+                finally
+                {
+                    try
+                    {
+                        channel.close();
+                    }
+                    catch( IOException e )
+                    {
+                        System.err.println("Ошибка при закрытии канала.");
+                    }
                 }
             }
         }
@@ -47,7 +53,6 @@ public class Client
     {
         SocketChannel socketChannel = null;
         boolean conection = false;
-        ///  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ClientConsoleHandler console = new ClientConsoleHandler();
         console.printInfo("Подключение к серверу " + host + ":" + port);
 
