@@ -16,35 +16,28 @@ public class Client
     public static void main(String[] args)
     {
         ClientConsoleHandler console = new ClientConsoleHandler();
-        boolean exit = false;
 
         while( true )
         {
-            SocketChannel channel = connectToServer();
-            if( channel != null )
+            try( SocketChannel channel = connectToServer() )
             {
-                try
+                if (channel != null)
                 {
                     NetworkManager networkManager = new NetworkManager(channel);
                     console.setProvider(networkManager);
                     console.welcomMessage();
-                    exit = console.executing();
-                }
-                catch( Exception e )
-                {
-                    System.out.println("Ошибка при работе приложения: " + e.getMessage());
-                }
-                finally
-                {
-                    try
+
+                    boolean exit = false;
+                    while (!exit)
                     {
-                        channel.close();
+                        exit = console.executing();
                     }
-                    catch( IOException e )
-                    {
-                        System.err.println("Ошибка при закрытии канала.");
-                    }
+                    if (exit) break;
                 }
+            }
+            catch( Exception e )
+            {
+                System.out.println("Ошибка при работе приложения: " + e.getMessage());
             }
         }
     }

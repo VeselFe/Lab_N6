@@ -51,8 +51,8 @@ public class Server
 
     public static void handleClient( Socket clientSocket, ServerConsoleHandler console, Invoker invoker )
     {
-        try(ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream());
-            ObjectOutputStream output = new ObjectOutputStream(clientSocket.getOutputStream()); )
+        try( ObjectOutputStream output = new ObjectOutputStream(clientSocket.getOutputStream());
+             ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream()); )
         {
             console.printInfo("Потоки ввода-вывода инициализированы.");
             // логика обработки поступившей информации
