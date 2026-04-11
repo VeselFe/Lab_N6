@@ -1,4 +1,4 @@
-package ru.itmo.lab.manager;
+package ru.itmo.lab.manager.collection;
 
 import ru.itmo.lab.model.Person;
 import ru.itmo.lab.model.StudyGroup;

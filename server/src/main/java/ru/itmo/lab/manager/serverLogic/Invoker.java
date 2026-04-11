@@ -1,10 +1,11 @@
-package ru.itmo.lab.manager;
+package ru.itmo.lab.manager.serverLogic;
 
-import ru.itmo.lab.interfaces.Command;
-import ru.itmo.lab.interfaces.CommandWithArgs;
-import ru.itmo.lab.interfaces.InvokerActions;
+import ru.itmo.lab.interfaces.*;
+import ru.itmo.lab.manager.collection.CollectionManager;
+import ru.itmo.lab.model.Person;
+import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.myExceptions.CommandException;
-import ru.itmo.lab.interfaces.IO_Handler;
+import ru.itmo.lab.serverInterfaces.InvokerActions;
 import ru.itmo.lab.сommand.*;
 
 import java.util.HashMap;
@@ -17,7 +18,7 @@ import java.util.Map;
 public class Invoker implements InvokerActions
 {
     /** хранит все используемые пользовательские команды    */
-    private final Map<String, Command> commands;
+    private final Map<String, Command> clientCommands;
     /** ссылка на обрабатываемую коллекцию    */
     private final CollectionManager ManagersCollection;
     /** обарботчик консоли    */
@@ -26,15 +27,10 @@ public class Invoker implements InvokerActions
     public Invoker( CollectionManager newManagersCollection )
     {
         ManagersCollection = newManagersCollection;
-        commands = new HashMap<>();
+        clientCommands = new HashMap<>();
         registerCommands();
     }
 
-    /**
-     * Инициализация обработчика консоли
-     *
-     * @param newIO_Handler
-     */
     @Override
     public void initIOput( IO_Handler newIO_Handler )
     {
@@ -54,9 +50,11 @@ public class Invoker implements InvokerActions
         addCommand("update_id", new UpdateIdCommand(ManagersCollection));
         addCommand("remove_id", new RemoveCommand(ManagersCollection));
         addCommand("clear", new ClearCommand(ManagersCollection));
-        addCommand("save", new SaveCommand(ManagersCollection, "SavedCollection.txt"));
         addCommand("execute_script", new ExecuteScriptCommand(ManagersCollection));
+
+        addCommand("save", new SaveCommand(ManagersCollection, "SavedCollection.txt"));
         addCommand("exit", new ExitCommand());
+
         addCommand("remove_greater", new RemoveGreater(ManagersCollection));
         addCommand("remove_lower ", new RemoveLower(ManagersCollection));
         addCommand("remove_lower", new RomoveLowerKey(ManagersCollection));
@@ -74,51 +72,45 @@ public class Invoker implements InvokerActions
     @Override
     public void addCommand( String name, Command newCommand )
     {
-        if ( commands.containsKey(name) )
+        if ( clientCommands.containsKey(name) )
         {
             throw new CommandException("Команда '" + name + "' уже существует");
         }
-        commands.put(name, newCommand);
+        clientCommands.put(name, newCommand);
     }
 
-    /**
-     * Обработка команды из потока ввода
-     * Запуск выполнения обнаруженной команды
-     *
-     * @param input
-     */
     @Override
-    public void executeCommand( String input )
+    public void execute(String name,
+                        Long id,
+                        String arg,
+                        String updatedField,
+                        StudyGroup newGroup,
+                        Person newAdmin ) throws CommandException
     {
-        if (input.trim().isEmpty())
+        if (name.trim().isEmpty())
         {
-            ioHandler.printInfo("Пустая команда");
-            return;
+            throw new CommandException("Пустая команда");
         }
-
-        String[] args = input.trim().split("\\s+");
-        String name = args[0];
-
-        Command cmd = commands.get(name);
-
+        Command cmd = clientCommands.get(name);
         if ( cmd == null )
         {
-            ioHandler.printInfo("Неизвестная команда: '" + name + "'");
-            return;
+            throw new CommandException("Неизвестная команда: '" + name + "'");
         }
-        else
+        if ( id == null )
         {
-            if( !(cmd instanceof CommandWithArgs) && args.length > 2 )
-            {
-                ioHandler.printError("Больше 1 аргумента команды");
-                return;
-            }
+            throw new CommandException("ID группы не определен");
         }
-
-        try {
-            if( cmd instanceof CommandWithArgs )
+        try
+        {
+            if( cmd instanceof CommandWithKey )
             {
-                if( args.length == 2 )
+                ((CommandWithKey) cmd).getArgs( id );
+                cmd.execute(ioHandler);
+            }
+            else if( cmd instanceof CommandWithArgs )
+            {
+                String[] args = arg.trim().split("\\s+");
+                if( args.length == 1 )
                 {
                     CommandWithArgs cmdArgs = (CommandWithArgs) cmd;
                     cmdArgs.getArgs(args[1]);
@@ -126,7 +118,7 @@ public class Invoker implements InvokerActions
                 }
                 else
                 {
-                    throw new IllegalArgumentException("Некорректный ввод аргументов команды");
+                    throw new IllegalArgumentException("Некорректный ввод аргументов команды (Ожидается ввод 1 аргумента)");
                 }
             }
             else
@@ -152,6 +144,6 @@ public class Invoker implements InvokerActions
     @Override
     public Map<String, Command> getCommands()
     {
-        return commands;
+        return clientCommands;
     }
 }

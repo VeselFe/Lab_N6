@@ -20,6 +20,7 @@ import java.time.ZonedDateTime;
  */
 public class StudyGroup implements Comparable<StudyGroup>, Serializable
 {
+    private static final long serialVersionUID = 666L;
     /** Уникальный идентификатор группы. Значение > 0, генерируется автоматически, уникально. */
     private long id;
     /** Название группы. Поле не может быть null, строка не пустая. */

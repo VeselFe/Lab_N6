@@ -1,9 +1,8 @@
-package ru.itmo.lab.сommand;
+package ru.itmo.lab.manager.collection.fileManagement;
 
-import ru.itmo.lab.manager.CollectionManager;
-import ru.itmo.lab.manager.GroupsFileManager;
+import ru.itmo.lab.interfaces.OutputHandler;
+import ru.itmo.lab.manager.collection.CollectionManager;
 import ru.itmo.lab.model.StudyGroup;
-import ru.itmo.lab.interfaces.IO_Handler;
 
 import java.util.Hashtable;
 
@@ -15,14 +14,14 @@ public class LoadCollection
     private final CollectionManager collection;
     private final String fileName;
     private final GroupsFileManager fileManager;
-    private final IO_Handler console;
+    private final OutputHandler printer;
 
-    public LoadCollection(CollectionManager newCollection, String newFileName, IO_Handler newConsole )
+    public LoadCollection(CollectionManager newCollection, String newFileName, OutputHandler newConsole )
     {
         collection = newCollection;
         fileName = newFileName;
         fileManager = new GroupsFileManager( fileName );
-        console = newConsole;
+        printer = newConsole;
     }
 
     public void loadNewCollection()
@@ -36,11 +35,11 @@ public class LoadCollection
             {
                 collection.getStudyGroups().put(key, loadedCollection.get( key ));
             }
-            console.printInfo("Загружено " + collection.getStudyGroups().size() + " групп(-ы).\n");
+            printer.printInfo("Загружено " + collection.getStudyGroups().size() + " групп(-ы).\n");
         }
         catch( Exception e )
         {
-            console.printError(e.getMessage());
+            printer.printError(e.getMessage());
         }
     }
 }

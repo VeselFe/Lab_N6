@@ -1,9 +1,9 @@
 package ru.itmo.lab.сommand;
 
 import ru.itmo.lab.interfaces.CommandWithArgs;
-import ru.itmo.lab.manager.CollectionManager;
-import ru.itmo.lab.manager.GroupsFileManager;
-import ru.itmo.lab.manager.Invoker;
+import ru.itmo.lab.manager.collection.CollectionManager;
+import ru.itmo.lab.manager.collection.fileManagement.GroupsFileManager;
+import ru.itmo.lab.manager.serverLogic.Invoker;
 import ru.itmo.lab.myExceptions.FileManagerException;
 import ru.itmo.lab.interfaces.IO_Handler;
 

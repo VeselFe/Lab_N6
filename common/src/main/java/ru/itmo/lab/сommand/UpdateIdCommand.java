@@ -1,7 +1,7 @@
 package ru.itmo.lab.сommand;
 
-import ru.itmo.lab.interfaces.CommandWithArgs;
-import ru.itmo.lab.manager.CollectionManager;
+import ru.itmo.lab.interfaces.CommandWithKey;
+import ru.itmo.lab.manager.collection.CollectionManager;
 import ru.itmo.lab.model.Person;
 import ru.itmo.lab.myExceptions.CommandException;
 import ru.itmo.lab.myRecords.FieldDescriptor;
@@ -11,7 +11,7 @@ import ru.itmo.lab.interfaces.IO_Handler;
 /**
  * Команда для обновления указанного пользователем поля элеменат коллекции
  */
-public class UpdateIdCommand implements CommandWithArgs
+public class UpdateIdCommand implements CommandWithKey
 {
     private final CollectionManager collection;
     private Long Key;
@@ -22,7 +22,7 @@ public class UpdateIdCommand implements CommandWithArgs
     }
 
     @Override
-    public void getArgs( String Args )
+    public void getArgs( Long Args )
     {
         try
         {

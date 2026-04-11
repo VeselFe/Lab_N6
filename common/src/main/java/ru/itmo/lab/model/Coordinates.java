@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 public class Coordinates implements Serializable
 {
+    private static final long serialVersionUID = 666L;
     /**  Поле не может быть null   */
     private Double x;
     private double y;

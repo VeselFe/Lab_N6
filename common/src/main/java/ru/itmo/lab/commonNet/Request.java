@@ -1,4 +1,4 @@
-package ru.itmo.lab.network;
+package ru.itmo.lab.commonNet;
 
 import ru.itmo.lab.model.Person;
 import ru.itmo.lab.model.StudyGroup;
@@ -8,6 +8,8 @@ import java.io.Serializable;
 
 public class Request implements Serializable
 {
+    private static final long serialVersionUID = 666L;
+
     private final String commandType;
     private final String argument;
     private final String updatedField;
@@ -24,6 +26,16 @@ public class Request implements Serializable
         this.admin = builder.admin;
         this.updatedField = builder.updatedField;
     }
+
+    public String getCommandType()
+    {
+        return commandType;
+    }
+    public String getArgument() { return argument; }
+    public String getUpdatedField() { return updatedField; }
+    public Long getIdArg() { return idArg; }
+    public StudyGroup getGroup() { return group; }
+    public Person getAdmin() { return admin; }
 
     public static class Builder
     {

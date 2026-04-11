@@ -1,7 +1,7 @@
 package ru.itmo.lab.generators;
 
 import ru.itmo.lab.interfaces.IdGeneratorInterface;
-import ru.itmo.lab.manager.CollectionManager;
+import ru.itmo.lab.manager.collection.CollectionManager;
 import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.myExceptions.CreationException;
 

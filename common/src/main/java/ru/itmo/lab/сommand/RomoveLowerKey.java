@@ -1,7 +1,7 @@
 package ru.itmo.lab.сommand;
 
-import ru.itmo.lab.interfaces.CommandWithArgs;
-import ru.itmo.lab.manager.CollectionManager;
+import ru.itmo.lab.interfaces.CommandWithKey;
+import ru.itmo.lab.manager.collection.CollectionManager;
 import ru.itmo.lab.myExceptions.CreationException;
 import ru.itmo.lab.interfaces.IO_Handler;
 
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Команда для удаления элементов коллекции с меньшим ключом
  */
-public class RomoveLowerKey implements CommandWithArgs
+public class RomoveLowerKey implements CommandWithKey
 {
     private final CollectionManager collection;
     private Long Key;
@@ -22,8 +22,9 @@ public class RomoveLowerKey implements CommandWithArgs
         collection = newCollection;
     }
 
+
     @Override
-    public void getArgs( String Args )
+    public void getArgs( Long Args )
     {
         try
         {

@@ -1,8 +1,8 @@
 package ru.itmo.lab.сommand;
 
-import ru.itmo.lab.interfaces.CommandWithArgs;
-import ru.itmo.lab.manager.CollectionManager;
-import ru.itmo.lab.manager.StudyGroupByStudentsComparator;
+import ru.itmo.lab.interfaces.CommandWithKey;
+import ru.itmo.lab.manager.collection.CollectionManager;
+import ru.itmo.lab.manager.collection.StudyGroupByStudentsComparator;
 import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.myExceptions.CommandException;
 import ru.itmo.lab.interfaces.IO_Handler;
@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Команда для удаления элементов коллекции с большим количеством студентов
  */
-public class RemoveGreater implements CommandWithArgs
+public class RemoveGreater implements CommandWithKey
 {
     private final CollectionManager collection;
     private Long Key;
@@ -24,7 +24,7 @@ public class RemoveGreater implements CommandWithArgs
     }
 
     @Override
-    public void getArgs( String Args )
+    public void getArgs( Long Args )
     {
         try
         {

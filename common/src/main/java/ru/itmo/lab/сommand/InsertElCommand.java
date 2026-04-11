@@ -1,7 +1,7 @@
 package ru.itmo.lab.сommand;
 
-import ru.itmo.lab.interfaces.CommandWithArgs;
-import ru.itmo.lab.manager.CollectionManager;
+import ru.itmo.lab.interfaces.CommandWithKey;
+import ru.itmo.lab.manager.collection.CollectionManager;
 import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.myExceptions.CreationException;
 import ru.itmo.lab.interfaces.IO_Handler;
@@ -9,7 +9,7 @@ import ru.itmo.lab.interfaces.IO_Handler;
 /**
  * Команда для добавления нового элемента в коллекции
  */
-public class InsertElCommand implements CommandWithArgs
+public class InsertElCommand implements CommandWithKey
 {
     private final CollectionManager collection;
     private Long Key;
@@ -20,7 +20,7 @@ public class InsertElCommand implements CommandWithArgs
     }
 
     @Override
-    public void getArgs( String Args )
+    public void getArgs( Long Args )
     {
         try
         {

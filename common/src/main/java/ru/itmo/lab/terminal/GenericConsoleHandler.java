@@ -12,13 +12,10 @@ import ru.itmo.lab.interfaces.IO_Handler;import ru.itmo.lab.interfaces.IO_Handle
 abstract public class GenericConsoleHandler<T>
 {
     protected T provider;
-    protected IO_Handler ioHandler;
     private boolean exit = false;
 
-    public GenericConsoleHandler( IO_Handler newIO )
-    {
-        ioHandler = newIO;
-    }
+    public GenericConsoleHandler()
+    {    }
 
     public void setProvider( T provider )
     {
@@ -51,5 +48,6 @@ abstract public class GenericConsoleHandler<T>
     protected void error( String messege ) { print("Ошибка: " + messege); }
     protected void welcomMessage() { print("Go!"); }
 
-    abstract protected boolean executing();
+    protected boolean executing() { return false; };
+    protected boolean executing( String input ) { return false; }
 }

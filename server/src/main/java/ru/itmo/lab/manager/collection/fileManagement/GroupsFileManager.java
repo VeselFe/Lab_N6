@@ -1,5 +1,6 @@
-package ru.itmo.lab.manager;
+package ru.itmo.lab.manager.collection.fileManagement;
 
+import ru.itmo.lab.interfaces.OutputHandler;
 import ru.itmo.lab.model.*;
 import ru.itmo.lab.myEnums.*;
 import ru.itmo.lab.myExceptions.CreationException;
@@ -13,7 +14,6 @@ import java.util.List;
 
 import com.thoughtworks.xstream.*;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-import ru.itmo.lab.interfaces.IO_Handler;
 
 /**
  * Работает с потоками ввода-вывода в файл, xml-конвертером для StudyGroups
@@ -24,7 +24,7 @@ import ru.itmo.lab.interfaces.IO_Handler;
 public class GroupsFileManager extends FileManager<Long, StudyGroup>
 {
     private XStream xstream;
-    static private IO_Handler errorPrinter;
+    static private OutputHandler errorPrinter;
 
     public GroupsFileManager( String newFileName )
     {
@@ -32,7 +32,7 @@ public class GroupsFileManager extends FileManager<Long, StudyGroup>
         xstream = initXStream();
     }
 
-    static public void setErrorPrinter( IO_Handler newPrinter )
+    static public void setErrorPrinter( OutputHandler newPrinter )
     {
         errorPrinter = newPrinter;
     }

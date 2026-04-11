@@ -3,14 +3,14 @@ package ru.itmo.lab.clientTerminal;
 import ru.itmo.lab.myEnums.Commands;
 import ru.itmo.lab.myExceptions.CommandException;
 import ru.itmo.lab.network.NetworkManager;
-import ru.itmo.lab.network.Request;
+import ru.itmo.lab.commonNet.Request;
 import ru.itmo.lab.terminal.GenericConsoleHandler;
 import ru.itmo.lab.terminal.*;
 import ru.itmo.lab.interfaces.IO_Handler;
 import ru.itmo.lab.model.Person;
 import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.myExceptions.CreationException;
-import ru.itmo.lab.manager.Invoker;
+import ru.itmo.lab.manager.serverLogic.Invoker;
 import ru.itmo.lab.myRecords.*;
 
 import java.util.Scanner;
@@ -37,7 +37,6 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
 
     public ClientConsoleHandler()
     {
-        super(null);
     }
 
     @Override
@@ -51,7 +50,7 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
     {
         print("\n         Введите команду");
         print("=====================================");
-        input = ioHandler.readline();
+        input = readline();
         if( input.trim().toLowerCase().equals("exit") )
         {
             stop();
@@ -64,7 +63,7 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
         }
         catch( Exception e )
         {
-            printError("");
+            printError("Ошибка при попытке отпраки сообщения");
         }
 
         return stop;
@@ -101,7 +100,7 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
     {
         if (input.trim().isEmpty())
         {
-            ioHandler.printError("Пустая команда");
+            printError("Пустая команда");
             return null;
         }
 

@@ -14,12 +14,12 @@ public class NetworkManager
         this.channel = channel;
     }
 
-    public void network( Request request ) throws IOException
+    public void network( ru.itmo.lab.commonNet.Request request ) throws IOException
     {
         sendRequest( request );
     }
 
-    private void  sendRequest( Request request ) throws IOException
+    private void  sendRequest( ru.itmo.lab.commonNet.Request request ) throws IOException
     {
         ByteArrayOutputStream byteOS = new ByteArrayOutputStream();
         ObjectOutputStream objectOS = new ObjectOutputStream( byteOS );

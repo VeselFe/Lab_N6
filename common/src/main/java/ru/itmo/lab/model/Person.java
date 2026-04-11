@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
  */
 public class Person implements Serializable
 {
+    private static final long serialVersionUID = 666L;
     /** Имя человека. Поле не может быть null, строка не может быть пустой. */
     private String name;
     /** Дата рождения. Поле в формате LocalDateTime. */

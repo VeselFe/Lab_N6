@@ -2,7 +2,7 @@ package ru.itmo.lab.сommand;
 
 import ru.itmo.lab.interfaces.Command;
 import ru.itmo.lab.interfaces.IO_Handler;
-import ru.itmo.lab.interfaces.InvokerActions;
+import ru.itmo.lab.serverInterfaces.InvokerActions;
 
 /**
  * Команда для вывода в консоль списка всех пользовательских команд
