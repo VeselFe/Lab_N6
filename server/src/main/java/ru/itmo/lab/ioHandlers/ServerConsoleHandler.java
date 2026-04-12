@@ -33,5 +33,5 @@ public class ServerConsoleHandler extends GenericConsoleHandler<Invoker>
         print("СЕРВЕР: <Ошибка>\n" + messege + "\n");
     }
     public void printRequest( String request ) {}
-    public void techPrint( String techMessege ) { printCurLine( techMessege ); }
+    public void techPrint( String techMessege ) { print( techMessege ); }
 }

@@ -11,6 +11,7 @@ import ru.itmo.lab.manager.serverLogic.Invoker;
 import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.commonNet.Request;
 import ru.itmo.lab.serverNetManager.RequestReader;
+import ru.itmo.lab.serverNetManager.ResponseSender;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -67,14 +68,11 @@ public class Server
 
                     // обрабатываем
                     Response response = CommandProccessor.ProcessRequest(request, invoker);
-                    console.printInfo("Success: " + response.isSuccess()+";");
-                    console.printInfo("Message: " + response.getMessage() + ";");
+                    console.techPrint("Success: " + response.isSuccess()+";");
+                    console.techPrint("Message: " + response.getMessage() + ";");
 
                     // отправляем обратно ответ
-                    //sendResponse(clientSocket, response);
-                    // output.writeObject(response);
-                    // output.flush();
-                    // oytput.reset();
+                    ResponseSender.sendResponse(output, response);
                 }
                 catch( EOFException e )
                 {
