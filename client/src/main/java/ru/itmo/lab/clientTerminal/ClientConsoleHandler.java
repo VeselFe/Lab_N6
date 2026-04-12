@@ -2,6 +2,7 @@ package ru.itmo.lab.clientTerminal;
 
 import ru.itmo.lab.myEnums.Commands;
 import ru.itmo.lab.myExceptions.CommandException;
+import ru.itmo.lab.myExceptions.ConnectionException;
 import ru.itmo.lab.network.NetworkManager;
 import ru.itmo.lab.commonNet.Request;
 import ru.itmo.lab.terminal.GenericConsoleHandler;
@@ -57,14 +58,18 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
             return stop;
         }
         Request request = buildRequest(input);
+
         try
         {
             provider.network(request);
-
+        }
+        catch( ConnectionException e )
+        {
+            throw new ConnectionException(e.getMessage());
         }
         catch( Exception e )
         {
-            printError("Ошибка при попытке отпраки сообщения");
+            printError("ошибка при попытке отправки запроса на сервер. ");
         }
 
         return stop;
@@ -184,6 +189,7 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
                             clientRequestBuilder.setArgument(args[1]);
                         }
                     }
+                    clientRequestBuilder.setCommandType(name);
 
                     return clientRequestBuilder.buildRequest();
                 }

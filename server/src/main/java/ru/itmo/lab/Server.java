@@ -26,13 +26,14 @@ public class Server
         CollectionManager mainCollection = CollectionManager.createCollection();
         StudyGroup.setIdGenerator( new BasicGenerator(mainCollection) );
         Invoker invoker = new Invoker( mainCollection );
+
         ServerConsoleHandler console = new ServerConsoleHandler();
         GroupsFileManager.setErrorPrinter(console);
         new Launcher(mainCollection, console).launchCollection();
         console.setProvider(invoker);
 
         /// Сеть
-        System.out.println("Сервер запустился. Порт: " + port);
+        console.printInfo("Сервер запустился. Порт: " + port);
         try( ServerSocket serverSocket = new ServerSocket(port) )
         {
             while( true )
@@ -45,7 +46,7 @@ public class Server
         }
         catch( IOException e )
         {
-            console.printError(e.getMessage());
+            console.printError("Ошибка сервера: " + e.getMessage());
         }
     }
 
@@ -55,27 +56,65 @@ public class Server
              ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream()); )
         {
             console.printInfo("Потоки ввода-вывода инициализированы.");
-            // логика обработки поступившей информации
-            // читаем запрос
-            Request request = RequestReader.read(input);
-            console.techPrint("Получен запрос: " + request.getCommandType());
+            while( !clientSocket.isClosed() )
+            {
+                try
+                {
+                    // логика обработки поступившей информации
+                    // читаем запрос
+                    Request request = RequestReader.read( input );
+                    console.techPrint("Получен запрос: " + request.getCommandType() + "\n");
 
-            // обрабатываем
-            Response response = CommandProccessor.ProcessRequest(request, invoker);
-            System.out.println(response.isSuccess());
-            System.out.println(response.getMessage());
-            // отправляем обратно ответ
-            //sendResponse(clientSocket, response);
+                    // обрабатываем
+                    Response response = CommandProccessor.ProcessRequest(request, invoker);
+                    console.printInfo("Success: " + response.isSuccess()+";");
+                    console.printInfo("Message: " + response.getMessage() + ";");
 
-            console.printInfo("Запрос обработан успешно.");
+                    // отправляем обратно ответ
+                    //sendResponse(clientSocket, response);
+                    // output.writeObject(response);
+                    // output.flush();
+                    // oytput.reset();
+                }
+                catch( EOFException e )
+                {
+                    console.printError("Клиент завершил соединение");
+                    break;
+                }
+                catch( ClassNotFoundException e )
+                {
+                    console.printError("Некорректные полученные данные");
+                }
+                catch( Exception e )
+                {
+                    console.printError("Неизвестная ошибка");
+                    break;
+                }
+            }
         }
-        catch ( ClassNotFoundException e )
-        {
-            console.printError("Неивестная команда");
+        catch( IOException e ) {
+            if (e.getMessage() == "Connection reset")
+            {
+                console.printError("Клиент отключился.");
+            }
+            else
+            {
+                console.printError("Ошибка при обмене данными с клиентом: " + e.getMessage());
+            }
         }
-        catch( IOException e )
+        finally
         {
-            console.printError("Ошибка при обмене данными с клиентом: " + e.getMessage());
+            try
+            {
+                if (!clientSocket.isClosed())
+                {
+                    clientSocket.close();
+                }
+            }
+            catch (IOException e)
+            {
+                console.printError("Ошибка при закрытии сокета.");
+            }
         }
     }
 

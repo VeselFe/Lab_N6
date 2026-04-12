@@ -96,14 +96,14 @@ public class Invoker implements InvokerActions
         {
             throw new CommandException("Неизвестная команда: '" + name + "'");
         }
-        if ( id == null )
-        {
-            throw new CommandException("ID группы не определен");
-        }
         try
         {
             if( cmd instanceof CommandWithKey )
             {
+                if ( id == null )
+                {
+                    throw new CommandException("ID группы не определен");
+                }
                 ((CommandWithKey) cmd).getArgs( id );
                 cmd.execute(ioHandler);
             }

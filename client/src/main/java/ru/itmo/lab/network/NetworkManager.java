@@ -1,5 +1,7 @@
 package ru.itmo.lab.network;
 
+import ru.itmo.lab.myExceptions.ConnectionException;
+
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
@@ -16,7 +18,14 @@ public class NetworkManager
 
     public void network( ru.itmo.lab.commonNet.Request request ) throws IOException
     {
-        sendRequest( request );
+        try
+        {
+            sendRequest( request );
+        }
+        catch( IOException e )
+        {
+            throw new ConnectionException("Сервер разрвал соединение.");
+        }
     }
 
     private void  sendRequest( ru.itmo.lab.commonNet.Request request ) throws IOException
