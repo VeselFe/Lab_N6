@@ -68,11 +68,15 @@ public class Server
 
                     // обрабатываем
                     Response response = CommandProccessor.ProcessRequest(request, invoker);
+                    console.printInfo("Запрос обработан!");
+                    console.techPrint("------------------------------------------");
                     console.techPrint("Success: " + response.isSuccess() + ";");
                     console.techPrint("Message: " + response.getMessage() + ";");
+                    console.techPrint("------------------------------------------");
 
                     // отправляем обратно ответ
                     ResponseSender.sendResponse(output, response);
+                    console.printInfo("Ответ отправлен!");
                 }
                 catch (ClassNotFoundException e)
                 {

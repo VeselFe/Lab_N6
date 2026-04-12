@@ -1,8 +1,10 @@
 package ru.itmo.lab.clientTerminal;
 
+import ru.itmo.lab.commonNet.Response;
 import ru.itmo.lab.myEnums.Commands;
 import ru.itmo.lab.myExceptions.CommandException;
 import ru.itmo.lab.myExceptions.ConnectionException;
+import ru.itmo.lab.myExceptions.ResponseException;
 import ru.itmo.lab.network.NetworkManager;
 import ru.itmo.lab.commonNet.Request;
 import ru.itmo.lab.terminal.GenericConsoleHandler;
@@ -54,7 +56,7 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
     @Override
     public boolean executing()
     {
-        if( requestCreator.equals(null) ) throw new RuntimeException("Сборщик запроса не инициирован.");
+        if( requestCreator == null ) throw new RuntimeException("Сборщик запроса не инициирован.");
         print("\n         Введите команду");
         print("=====================================");
         input = readline();
@@ -67,15 +69,27 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
 
         try
         {
-            provider.network(request);
+            if( request != null )
+            {
+                provider.network(request);
+                printInfo(provider.getServerResponse());
+            }
+            else
+            {
+                printError("Запрос не отправлен!");
+            }
         }
         catch( ConnectionException e )
         {
             throw new ConnectionException(e.getMessage());
         }
+        catch( ResponseException e )
+        {
+            printError(e.getMessage());
+        }
         catch( Exception e )
         {
-            printError("ошибка при попытке отправки запроса на сервер. ");
+            printError("ошибка при попытке отправки запроса на сервер. " + e.getMessage());
         }
 
         return stop;

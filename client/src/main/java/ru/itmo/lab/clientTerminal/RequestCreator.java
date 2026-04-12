@@ -112,7 +112,7 @@ public class RequestCreator
         }
         catch( IllegalArgumentException e )
         {
-            console.printError("Некорректный формат для ключа!");
+            console.printError(e.getMessage());
             return null;
         }
         catch ( Exception e )

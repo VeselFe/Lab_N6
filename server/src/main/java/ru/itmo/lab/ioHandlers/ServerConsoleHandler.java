@@ -26,7 +26,7 @@ public class ServerConsoleHandler extends GenericConsoleHandler<Invoker>
 
     public void printInfo( String message )
     {
-        print( "<i> " + message );
+        print( "СЕРВЕР: " + message );
     }
     public void printError( String messege )
     {
