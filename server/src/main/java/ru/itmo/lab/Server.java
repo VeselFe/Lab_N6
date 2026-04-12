@@ -16,6 +16,7 @@ import ru.itmo.lab.serverNetManager.ResponseSender;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class Server
 {
@@ -59,38 +60,37 @@ public class Server
             console.printInfo("Потоки ввода-вывода инициализированы.");
             while( !clientSocket.isClosed() )
             {
-                try
-                {
+                try {
                     // логика обработки поступившей информации
                     // читаем запрос
-                    Request request = RequestReader.read( input );
+                    Request request = RequestReader.read(input);
                     console.techPrint("Получен запрос: " + request.getCommandType() + "\n");
 
                     // обрабатываем
                     Response response = CommandProccessor.ProcessRequest(request, invoker);
-                    console.techPrint("Success: " + response.isSuccess()+";");
+                    console.techPrint("Success: " + response.isSuccess() + ";");
                     console.techPrint("Message: " + response.getMessage() + ";");
 
                     // отправляем обратно ответ
                     ResponseSender.sendResponse(output, response);
                 }
-                catch( EOFException e )
-                {
-                    console.printError("Клиент завершил соединение");
-                    break;
-                }
-                catch( ClassNotFoundException e )
+                catch (ClassNotFoundException e)
                 {
                     console.printError("Некорректные полученные данные");
                 }
-                catch( Exception e )
+                catch ( SocketException e )
+                {
+                    console.printError("Клиент отключился.");
+                    break;
+                }
+                catch ( Exception e )
                 {
                     console.printError("Неизвестная ошибка");
-                    break;
                 }
             }
         }
-        catch( IOException e ) {
+        catch( IOException e )
+        {
             if (e.getMessage() == "Connection reset")
             {
                 console.printError("Клиент отключился.");
