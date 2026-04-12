@@ -16,6 +16,7 @@ public class Client
     public static void main(String[] args)
     {
         ClientConsoleHandler console = new ClientConsoleHandler();
+        console.initRequestCreator( new ClientConsoleHandler() );
 
         while( true )
         {
