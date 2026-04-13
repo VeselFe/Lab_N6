@@ -56,6 +56,8 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
     @Override
     public boolean executing()
     {
+        String serverResponse;
+
         if( requestCreator == null ) throw new RuntimeException("Сборщик запроса не инициирован.");
         print("\n         Введите команду");
         print("=====================================");
@@ -72,7 +74,8 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
             if( request != null )
             {
                 provider.network(request);
-                printInfo(provider.getServerResponse());
+                serverResponse = provider.getServerResponse();
+                printInfo(serverResponse);
             }
             else
             {

@@ -1,10 +1,14 @@
 package ru.itmo.lab.ioHandlers;
 
 import ru.itmo.lab.commonNet.Response;
+import ru.itmo.lab.generators.BasicGenerator;
 import ru.itmo.lab.interfaces.IO_Handler;
+import ru.itmo.lab.manager.collection.CollectionManager;
 import ru.itmo.lab.model.Person;
 import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.myExceptions.CommandException;
+
+import java.util.Collection;
 
 public class ResponseIOHandler implements IO_Handler
 {
@@ -28,6 +32,8 @@ public class ResponseIOHandler implements IO_Handler
         {
             throw new CommandException("Данные группы не были переданы");
         }
+        studyGroupFromRequest.generateGroupID();
+
         return studyGroupFromRequest;
     }
     public Person readPerson()
@@ -44,7 +50,7 @@ public class ResponseIOHandler implements IO_Handler
         hasError = true;
         output.append("<Error> " + messege + "\n");
     }
-    public void printInfo( String messege ) { output.append("<i> " + messege + "\n"); }
+    public void printInfo( String messege ) { output.append(messege + "\n"); }
     public void printRequest( String request ) {}
     public String readline() { return ""; }
 

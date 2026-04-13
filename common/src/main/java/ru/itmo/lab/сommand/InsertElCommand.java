@@ -43,6 +43,7 @@ public class InsertElCommand implements CommandWithKey
             }
             StudyGroup newGroup = consol.readNewStudyGroup();
             collection.addElement(Key, newGroup);
+            consol.printInfo("Колекция: Добавлен новый элемент!");
         }
         catch (Exception e)
         {

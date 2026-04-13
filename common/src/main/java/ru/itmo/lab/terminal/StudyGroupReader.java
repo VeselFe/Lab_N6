@@ -59,7 +59,7 @@ public class StudyGroupReader
         }
         catch( Exception e )
         {
-            throw new CreationException("Ошибка при попытке инициализации группы");
+            throw new CreationException("Ошибка при попытке инициализации группы: " + e.getMessage());
         }
     }
 }

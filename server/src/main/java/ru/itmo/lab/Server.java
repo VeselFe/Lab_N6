@@ -54,69 +54,68 @@ public class Server
 
     public static void handleClient( Socket clientSocket, ServerConsoleHandler console, Invoker invoker )
     {
-        try( ObjectOutputStream output = new ObjectOutputStream(clientSocket.getOutputStream());
-             ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream()); )
+        console.printInfo("Потоки ввода-вывода инициализированы.");
+        while( !clientSocket.isClosed() )
         {
-            console.printInfo("Потоки ввода-вывода инициализированы.");
-            while( !clientSocket.isClosed() )
+            try//( ObjectOutputStream output = new ObjectOutputStream(clientSocket.getOutputStream());
+               //  ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream()); )
             {
-                try {
-                    // логика обработки поступившей информации
-                    // читаем запрос
-                    Request request = RequestReader.read(input);
-                    console.techPrint("Получен запрос: " + request.getCommandType() + "\n");
+                InputStream is = clientSocket.getInputStream();
+                OutputStream os = clientSocket.getOutputStream();
+                ObjectInputStream input = new ObjectInputStream(is);
 
-                    // обрабатываем
-                    Response response = CommandProccessor.ProcessRequest(request, invoker);
-                    console.printInfo("Запрос обработан!");
-                    console.techPrint("------------------------------------------");
-                    console.techPrint("Success: " + response.isSuccess() + ";");
-                    console.techPrint("Message: " + response.getMessage() + ";");
-                    console.techPrint("------------------------------------------");
+                // логика обработки поступившей информации
+                // читаем запрос
+                Request request = RequestReader.read(input);
+                console.techPrint("Получен запрос: " + request.getCommandType() + "\n");
 
-                    // отправляем обратно ответ
-                    ResponseSender.sendResponse(output, response);
-                    console.printInfo("Ответ отправлен!");
-                }
-                catch (ClassNotFoundException e)
-                {
-                    console.printError("Некорректные полученные данные");
-                }
-                catch ( SocketException e )
-                {
-                    console.printError("Клиент отключился.");
-                    break;
-                }
-                catch ( Exception e )
-                {
-                    console.printError("Неизвестная ошибка");
-                }
+                // обрабатываем
+                Response response = CommandProccessor.ProcessRequest(request, invoker );
+                console.printInfo("Запрос обработан!");
+                console.techPrint("------------------------------------------");
+                console.techPrint("Success: " + response.isSuccess() + ";");
+                console.techPrint("Message: " + response.getMessage() + ";");
+                console.techPrint("------------------------------------------");
+
+                ObjectOutputStream output = new ObjectOutputStream(os);
+                // отправляем обратно ответ
+                ResponseSender.sendResponse(output, response);
+                console.printInfo("Ответ отправлен!");
+            }
+            catch( ClassNotFoundException e )
+            {
+                console.printError("Некорректные полученные данные");
+            }
+            catch( EOFException e )
+            {
+                console.printInfo("Клиент завершил сессию.");
+                break;
+            }
+            catch( SocketException e )
+            {
+                console.printError("Соединение с клиентом потеряно.");
+                break;
+            }
+            catch( IOException e )
+            {
+                console.printError("Ошибка потоков ввода-вывода: " + e.getMessage());
+                break;
+            }
+            catch ( Exception e )
+            {
+                console.printError("Неизвестная ошибка при обработке запроса: " + e.getMessage());
             }
         }
-        catch( IOException e )
+        try
         {
-            if (e.getMessage() == "Connection reset")
+            if (!clientSocket.isClosed())
             {
-                console.printError("Клиент отключился.");
-            }
-            else
-            {
-                console.printError("Ошибка при обмене данными с клиентом: " + e.getMessage());
+                clientSocket.close();
             }
         }
-        finally
+        catch (IOException e)
         {
-            try
-            {
-                if (!clientSocket.isClosed())
-                {
-                    clientSocket.close();
-                }
-            }
-            catch (IOException e)
-            {
-                console.printError("Ошибка при закрытии сокета.");
-            }
+            console.printError("Ошибка при закрытии сокета.");
         }
     }
 

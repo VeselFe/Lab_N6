@@ -66,14 +66,22 @@ public class NetworkManager
                 return "Возникла ошибка при выполнении команды:\n___________________\n" + responseMessage + "\n___________________\n";
             }
         }
-        catch (ResponseException responseException)
-        {
-            throw responseException;
-        }
-        catch( Exception e )
+        catch (ClassNotFoundException e)
         {
             throw new ResponseException("Не обработался ответ: " + e.getMessage());
         }
+        catch(IOException e)
+        {
+            throw new ResponseException("Не обработался ответ: " + e.getMessage());
+        }
+//        catch (ResponseException responseException)
+//        {
+//            throw responseException;
+//        }
+//        catch( Exception e )
+//        {
+//            throw new ResponseException("Не обработался ответ: " + e.getMessage());
+//        }
     }
 
     private Response recieveResponse() throws IOException, ClassNotFoundException

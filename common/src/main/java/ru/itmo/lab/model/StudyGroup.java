@@ -22,7 +22,7 @@ public class StudyGroup implements Comparable<StudyGroup>, Serializable
 {
     private static final long serialVersionUID = 666L;
     /** Уникальный идентификатор группы. Значение > 0, генерируется автоматически, уникально. */
-    private long id;
+    private Long id = null;
     /** Название группы. Поле не может быть null, строка не пустая. */
     private String name;
     /** Координаты группы. Поле не может быть null. */
@@ -66,6 +66,10 @@ public class StudyGroup implements Comparable<StudyGroup>, Serializable
     {
         idGenerator = newGenerator;
     }
+    public void generateGroupID()
+    {
+        id = idGenerator.generateUniqueId();
+    }
     /**
      * Внутренний статический класс Builder для создания объектов StudyGroup.
      * Позволяет устанавливать поля поэтапно с проверкой полеей.
@@ -73,7 +77,7 @@ public class StudyGroup implements Comparable<StudyGroup>, Serializable
      */
     public static class Builder
     {
-        private long id;
+        private Long id = null;
         private String name;
         private Coordinates coordinates;
         private Integer studentsCount;
@@ -91,7 +95,8 @@ public class StudyGroup implements Comparable<StudyGroup>, Serializable
          */
         public StudyGroup build()
         {
-            this.id = idGenerator.generateUniqueId();
+            if (idGenerator != null) this.id = idGenerator.generateUniqueId();
+
             if(name.isEmpty() || coordinates == null || studentsCount == null || shouldBeExpelled == null || formOfEducation == null || semesterEnum == null || groupAdmin == null)
             {
                 throw new CreationException("Не все поля заполнены!");
