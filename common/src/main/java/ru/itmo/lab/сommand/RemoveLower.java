@@ -48,14 +48,12 @@ public class RemoveLower implements CommandWithKey
 
         StudyGroupByStudentsComparator comparator = new StudyGroupByStudentsComparator();
         long count = 0;
-        for(Map.Entry<Long, StudyGroup> element : collection.getStudyGroups().entrySet())
-        {
-            if( comparator.compare(element.getValue(), choosenGroup) < 0 )
-            {
-                collection.getStudyGroups().remove(element.getKey());
-                count++;
-            }
-        }
+        int sizeBefore = collection.getStudyGroups().size();
+
+        collection.getStudyGroups().entrySet().removeIf(
+                entry -> comparator.compare(entry.getValue(), choosenGroup) < 0
+        );
+        count = sizeBefore - collection.getStudyGroups().size();
         if( count == 0 )
         {
             consol.printInfo("Совпадений не найдено!");
@@ -68,11 +66,11 @@ public class RemoveLower implements CommandWithKey
     @Override
     public String getName()
     {
-        return "remove_lower  { element }";
+        return "remove_lower_key { key }";
     }
     @Override
     public String getDescription()
     {
-        return "удалить из коллекции все элементы, которых количество студентов меньше, чем в заданном";
+        return "удалить из коллекции все элементы, у которых количество студентов меньше, чем в заданном";
     }
 }

@@ -39,7 +39,7 @@ public class RemoveCommand implements CommandWithKey
     @Override
     public String getName()
     {
-        return "remove_key";
+        return "remove_key { key }";
     }
     @Override
     public String getDescription()

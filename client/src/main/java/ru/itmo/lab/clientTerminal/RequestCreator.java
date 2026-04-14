@@ -88,17 +88,25 @@ public class RequestCreator
                     }
                 }
                 default -> {
-                    if( Commands.find(name) == null ) throw new IllegalArgumentException("Неизвестная команда!");
+                    Commands cmd = Commands.find(name);
+                    if( cmd == null ) throw new IllegalArgumentException("Неизвестная команда!");
                     Request.Builder clientRequestBuilder = new Request.Builder();
                     clientRequestBuilder.setCommandType(name);
                     if( args.length == 2 )
                     {
-                        try
+                        if(cmd.getArgType().equals("long"))
                         {
-                            Long id = Long.parseLong( args[1] );
-                            clientRequestBuilder.setID(id);
+                            try
+                            {
+                                Long id = Long.parseLong( args[1] );
+                                clientRequestBuilder.setID(id);
+                            }
+                            catch( NumberFormatException e )
+                            {
+                                clientRequestBuilder.setArgument(args[1]);
+                            }
                         }
-                        catch( NumberFormatException e )
+                        else
                         {
                             clientRequestBuilder.setArgument(args[1]);
                         }

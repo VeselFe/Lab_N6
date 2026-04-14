@@ -50,12 +50,12 @@ public class Invoker implements ServerInvokerActions
         addCommand("show", new ShowCommand(ManagersCollection));
         addCommand("insert_element", new InsertElCommand(ManagersCollection));
         addCommand("update_id", new UpdateIdCommand(ManagersCollection));
-        addCommand("remove_id", new RemoveCommand(ManagersCollection));
+        addCommand("remove_key", new RemoveCommand(ManagersCollection));
         addCommand("clear", new ClearCommand(ManagersCollection));
         addCommand("exit", new ExitCommand());
         addCommand("remove_greater", new RemoveGreater(ManagersCollection));
-        addCommand("remove_lower ", new RemoveLower(ManagersCollection));
-        addCommand("remove_lower", new RomoveLowerKey(ManagersCollection));
+        addCommand("remove_lower", new RemoveLower(ManagersCollection));
+        addCommand("remove_lower_key", new RomoveLowerKey(ManagersCollection));
         addCommand("filter_by_semester_enum", new FilterBySemesterEnum(ManagersCollection));
         addCommand("filter_starts_with_name", new FilterStartsWithName(ManagersCollection));
         addCommand("print_ascending", new PrintAscending(ManagersCollection));
@@ -115,6 +115,7 @@ public class Invoker implements ServerInvokerActions
                     throw new CommandException("ID группы не определен");
                 }
                 ((CommandWithKey) cmd).getArgs( id );
+                                                                     ioHandler.printInfo("Ключ определен: " + id.toString());
                 cmd.execute(ioHandler);
             }
             else if( cmd instanceof CommandWithArgs )
@@ -123,7 +124,7 @@ public class Invoker implements ServerInvokerActions
                 if( args.length == 1 )
                 {
                     CommandWithArgs cmdArgs = (CommandWithArgs) cmd;
-                    cmdArgs.getArgs(args[1]);
+                    cmdArgs.getArgs(args[0]);
                     cmdArgs.execute(ioHandler);
                 }
                 else
