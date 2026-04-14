@@ -48,7 +48,11 @@ public class GroupsFileManager extends FileManager<Long, StudyGroup>
         XStream initialXStream = new XStream(new DomDriver());
         initialXStream.autodetectAnnotations(true);
 
-        initialXStream.allowTypesByWildcard( new String[] { "model.*" } );
+        initialXStream.allowTypesByWildcard(new String[] {
+                "ru.itmo.lab.model.**",
+                "java.util.Hashtable",
+                "java.util.Map"
+        });
 
         initialXStream.alias("studyGroups", Hashtable.class);
         initialXStream.alias("group", StudyGroup.class);

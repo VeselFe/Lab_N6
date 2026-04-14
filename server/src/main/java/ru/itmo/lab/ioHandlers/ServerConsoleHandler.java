@@ -1,6 +1,8 @@
 package ru.itmo.lab.ioHandlers;
 
 import ru.itmo.lab.interfaces.OutputHandler;
+import ru.itmo.lab.model.Person;
+import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.terminal.*;
 import ru.itmo.lab.interfaces.IO_Handler;
 import ru.itmo.lab.manager.serverLogic.Invoker;

@@ -28,6 +28,7 @@ public class Server
         CollectionManager mainCollection = CollectionManager.createCollection();
         StudyGroup.setIdGenerator( new BasicGenerator(mainCollection) );
         Invoker invoker = new Invoker( mainCollection );
+        CommandProccessor mainProccessor = new CommandProccessor( invoker );
 
         ServerConsoleHandler console = new ServerConsoleHandler();
         GroupsFileManager.setErrorPrinter(console);
@@ -43,7 +44,7 @@ public class Server
                 console.techPrint("Ожидание подключения клиента...");
                 Socket clientSocket = serverSocket.accept();
                 console.printInfo("Клиент подключен: " + clientSocket.getInetAddress());
-                handleClient(clientSocket, console, invoker);
+                handleClient(clientSocket, console, mainProccessor);
             }
         }
         catch( IOException e )
@@ -52,13 +53,13 @@ public class Server
         }
     }
 
-    public static void handleClient( Socket clientSocket, ServerConsoleHandler console, Invoker invoker )
+    public static void handleClient( Socket clientSocket, ServerConsoleHandler console, CommandProccessor proccessor )
     {
         console.printInfo("Потоки ввода-вывода инициализированы.");
+        CommandProccessor.restartServerProgramm();
         while( !clientSocket.isClosed() )
         {
-            try//( ObjectOutputStream output = new ObjectOutputStream(clientSocket.getOutputStream());
-               //  ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream()); )
+            try
             {
                 InputStream is = clientSocket.getInputStream();
                 OutputStream os = clientSocket.getOutputStream();
@@ -70,7 +71,20 @@ public class Server
                 console.techPrint("Получен запрос: " + request.getCommandType() + "\n");
 
                 // обрабатываем
-                Response response = CommandProccessor.ProcessRequest(request, invoker );
+                Response response = proccessor.ProcessRequest( request );
+
+                if( proccessor.isProgrammFinished() )
+                {
+                    console.printInfo("Клиент завершил работу приложения.");
+                    console.printInfo("Сохранение коллекции..");
+                    proccessor.saveCollection();
+                    console.printInfo("Колекция успешно сохранена!");
+                    ObjectOutputStream output = new ObjectOutputStream(os);
+                    // отправляем обратно ответ
+                    ResponseSender.sendResponse(output, response);
+                    console.printInfo("Завершение данной сессии...");
+                    break;
+                }
                 console.printInfo("Запрос обработан!");
                 console.techPrint("------------------------------------------");
                 console.techPrint("Success: " + response.isSuccess() + ";");
@@ -80,7 +94,7 @@ public class Server
                 ObjectOutputStream output = new ObjectOutputStream(os);
                 // отправляем обратно ответ
                 ResponseSender.sendResponse(output, response);
-                console.printInfo("Ответ отправлен!");
+                console.printInfo("Ответ отправлен!\n");
             }
             catch( ClassNotFoundException e )
             {
@@ -117,6 +131,7 @@ public class Server
         {
             console.printError("Ошибка при закрытии сокета.");
         }
+        console.printInfo("Сессия завершена!\n");
     }
 
 }

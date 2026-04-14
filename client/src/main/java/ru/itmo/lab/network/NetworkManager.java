@@ -48,7 +48,7 @@ public class NetworkManager
         }
     }
 
-    public String getServerResponse()
+    public String getServerResponse() throws IOException, ClassNotFoundException
     {
         try
         {
@@ -72,16 +72,12 @@ public class NetworkManager
         }
         catch(IOException e)
         {
-            throw new ResponseException("Не обработался ответ: " + e.getMessage());
+            throw new IOException("Не обработался ответ: " + e.getMessage());
         }
-//        catch (ResponseException responseException)
-//        {
-//            throw responseException;
-//        }
-//        catch( Exception e )
-//        {
-//            throw new ResponseException("Не обработался ответ: " + e.getMessage());
-//        }
+        catch( Exception e )
+        {
+            throw new ResponseException("Неизвестная ошибка при обработке запроса: " + e.getMessage());
+        }
     }
 
     private Response recieveResponse() throws IOException, ClassNotFoundException

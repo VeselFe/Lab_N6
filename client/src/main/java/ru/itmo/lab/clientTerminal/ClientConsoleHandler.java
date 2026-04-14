@@ -62,20 +62,24 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
         print("\n         Введите команду");
         print("=====================================");
         input = readline();
-        if( input.trim().toLowerCase().equals("exit") )
-        {
-            stop();
-            return stop;
-        }
         Request request = requestCreator.buildRequest(input);
-
         try
         {
+            if( input.trim().toLowerCase().equals("exit") )
+            {
+                stop();
+                Thread.sleep(500);
+                //return stop;
+            }
             if( request != null )
             {
                 provider.network(request);
                 serverResponse = provider.getServerResponse();
-                printInfo(serverResponse);
+                if( !stop ) printInfo(serverResponse);
+                else
+                {
+                    printInfo("Соединение успешно завершено!");
+                }
             }
             else
             {
@@ -89,6 +93,7 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
         catch( ResponseException e )
         {
             printError(e.getMessage());
+            return true;
         }
         catch( Exception e )
         {

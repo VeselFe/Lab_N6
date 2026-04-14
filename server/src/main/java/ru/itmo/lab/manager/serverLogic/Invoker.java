@@ -5,7 +5,7 @@ import ru.itmo.lab.manager.collection.CollectionManager;
 import ru.itmo.lab.model.Person;
 import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.myExceptions.CommandException;
-import ru.itmo.lab.serverInterfaces.InvokerActions;
+import ru.itmo.lab.serverInterfaces.ServerInvokerActions;
 import ru.itmo.lab.сommand.*;
 
 import java.util.HashMap;
@@ -15,10 +15,11 @@ import java.util.Map;
  * Класс для регистрации, обработки выполнения, передачи аргументов командам
  *
  */
-public class Invoker implements InvokerActions
+public class Invoker implements ServerInvokerActions
 {
     /** хранит все используемые пользовательские команды    */
     private final Map<String, Command> clientCommands;
+    private final Map<String, Command> serverCommands;
     /** ссылка на обрабатываемую коллекцию    */
     private final CollectionManager ManagersCollection;
     /** обарботчик консоли    */
@@ -28,6 +29,7 @@ public class Invoker implements InvokerActions
     {
         ManagersCollection = newManagersCollection;
         clientCommands = new HashMap<>();
+        serverCommands = new HashMap<>();
         registerCommands();
     }
 
@@ -50,17 +52,17 @@ public class Invoker implements InvokerActions
         addCommand("update_id", new UpdateIdCommand(ManagersCollection));
         addCommand("remove_id", new RemoveCommand(ManagersCollection));
         addCommand("clear", new ClearCommand(ManagersCollection));
-
-        //addCommand("execute_script", new ExecuteScriptCommand(ManagersCollection));
-        //addCommand("save", new SaveCommand(ManagersCollection, "SavedCollection.txt"));
-        //addCommand("exit", new ExitCommand());
-
+        addCommand("exit", new ExitCommand());
         addCommand("remove_greater", new RemoveGreater(ManagersCollection));
         addCommand("remove_lower ", new RemoveLower(ManagersCollection));
         addCommand("remove_lower", new RomoveLowerKey(ManagersCollection));
         addCommand("filter_by_semester_enum", new FilterBySemesterEnum(ManagersCollection));
         addCommand("filter_starts_with_name", new FilterStartsWithName(ManagersCollection));
         addCommand("print_ascending", new PrintAscending(ManagersCollection));
+
+        //addCommand("execute_script", new ExecuteScriptCommand(ManagersCollection));
+        addServerCommand("save", new SaveCommand(ManagersCollection, "SavedCollection.txt"));
+        addServerCommand("show", new ShowCommand(ManagersCollection));
     }
 
     /**
@@ -77,6 +79,14 @@ public class Invoker implements InvokerActions
             throw new CommandException("Команда '" + name + "' уже существует");
         }
         clientCommands.put(name, newCommand);
+    }
+    protected void addServerCommand( String name, Command newCommand )
+    {
+        if ( serverCommands.containsKey(name) )
+        {
+            throw new CommandException("Команда '" + name + "' уже существует");
+        }
+        serverCommands.put(name, newCommand);
     }
 
     @Override
@@ -133,6 +143,31 @@ public class Invoker implements InvokerActions
         catch ( Exception e )
         {
             throw new CommandException("ошибка исполнения команды '" + name + "': " + e.getMessage());
+        }
+    }
+    @Override
+    public void executeServerCommand( String name )
+    {
+        if (name.trim().isEmpty())
+        {
+            throw new CommandException("Пустая команда");
+        }
+        Command serverCommand = serverCommands.get(name);
+        if( serverCommand == null )
+        {
+            throw new CommandException("Неизвестная команда: '" + name + "'");
+        }
+        if( ioHandler == null )
+        {
+            throw new CommandException("Не инициализирован канал для вывода технических сообщений!");
+        }
+        try
+        {
+            serverCommand.execute( ioHandler );
+        }
+        catch( Exception e )
+        {
+            ioHandler.printError("Ошибка при попытке завершить работу сервера: " + e.getMessage());
         }
     }
 

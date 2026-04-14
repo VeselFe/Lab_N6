@@ -3,15 +3,19 @@ package ru.itmo.lab.manager.serverLogic;
 import ru.itmo.lab.commonNet.Request;
 import ru.itmo.lab.commonNet.Response;
 import ru.itmo.lab.ioHandlers.ResponseIOHandler;
-import ru.itmo.lab.manager.collection.CollectionManager;
-import ru.itmo.lab.model.StudyGroup;
-import ru.itmo.lab.serverInterfaces.InvokerActions;
-
-import java.util.Collection;
+import ru.itmo.lab.serverInterfaces.ServerInvokerActions;
 
 public class CommandProccessor
 {
-    public static Response ProcessRequest(Request clientRequest, InvokerActions invoker )
+    private static boolean exit = false;
+    private ServerInvokerActions invoker;
+
+    public CommandProccessor( ServerInvokerActions invoker )
+    {
+        this.invoker = invoker;
+    }
+
+    public Response ProcessRequest( Request clientRequest )
     {
         ResponseIOHandler responseHandler = new ResponseIOHandler();
         responseHandler.setStudyGroupFromRequest(clientRequest.getGroup());
@@ -34,5 +38,18 @@ public class CommandProccessor
                     .setMessage("<ServerError> " + e.getMessage() + "\n")
                     .buildResponse();
         }
+    }
+    public static void stopServerProgramm()
+    {
+        exit = true;
+    }
+    public static void restartServerProgramm() { exit = false; }
+    public boolean isProgrammFinished()
+    {
+        return exit;
+    }
+    public void saveCollection()
+    {
+        invoker.executeServerCommand("save");
     }
 }

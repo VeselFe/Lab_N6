@@ -1,4 +1,4 @@
-package ru.itmo.lab.serverInterfaces;
+package ru.itmo.lab.interfaces;
 
 import ru.itmo.lab.interfaces.Command;
 import ru.itmo.lab.interfaces.IO_Handler;

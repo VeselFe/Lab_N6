@@ -1,4 +1,4 @@
-package ru.itmo.lab.сommand;
+package ru.itmo.lab.manager.serverLogic;
 
 import ru.itmo.lab.interfaces.Command;
 import ru.itmo.lab.manager.collection.CollectionManager;
