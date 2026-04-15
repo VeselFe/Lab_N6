@@ -6,6 +6,7 @@ import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.interfaces.IO_Handler;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -25,15 +26,17 @@ public class ShowCommand implements Command
         String flag = "";
         consol.printInfo("Элементы коллекции: ");
         consol.printInfo("***************************************");
-        for (Map.Entry<Long, StudyGroup> element : collection.entrySet())
-        {
-            flag = element.getKey() + ": " + element.getValue().getName();
-            consol.printInfo(flag);
-            consol.printInfo("Подробная информация о " + element.getKey() + "-ом элеменете коллеции:\n" + element.getValue().getInformation());
-        }
-        if( flag == "" )
+        Set<Map.Entry<Long, StudyGroup>> collectionLikeSet = collection.entrySet();
+        if( collectionLikeSet.isEmpty() )
         {
             consol.printInfo("В колекции отсутствуют элементы!");
+        }
+        else
+        {
+            collectionLikeSet.stream().forEach(element -> {
+                consol.printInfo(element.getKey() + ": " + element.getValue().getName());
+                consol.printInfo("Подробная информация о " + element.getKey() + "-ом элеменете коллеции:\n" + element.getValue().getInformation());
+            });
         }
         consol.printInfo("***************************************\n");
     }

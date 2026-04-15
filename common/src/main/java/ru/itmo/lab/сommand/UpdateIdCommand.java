@@ -61,11 +61,10 @@ public class UpdateIdCommand implements CommandWithKey, Updatable
                 throw new CommandException("Не установлен ключ обновляемого элемента!");
             StudyGroup group = collection.getStudyGroups().get(Key);
             if( group == null )
-            {
                 throw new CommandException("Элемент с ключом " + Key + " не найден в коллекции!");
-            }
             if( updatedField == null )
                 throw new CommandException("Не установлено название обновляемого поля!");
+
             if (updatedField.name().equals("admin"))
             {
                 if(newAdmin == null)
