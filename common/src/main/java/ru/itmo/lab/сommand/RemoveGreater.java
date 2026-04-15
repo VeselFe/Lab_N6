@@ -7,6 +7,7 @@ import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.myExceptions.CommandException;
 import ru.itmo.lab.interfaces.IO_Handler;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,13 +48,14 @@ public class RemoveGreater implements CommandWithKey
         }
 
         StudyGroupByStudentsComparator comparator = new StudyGroupByStudentsComparator();
-        long count = 0;
-        int sizeBefore = collection.getStudyGroups().size();
 
-        collection.getStudyGroups().entrySet().removeIf(
-                entry -> comparator.compare(entry.getValue(), choosenGroup) > 0
-        );
-        count = sizeBefore - collection.getStudyGroups().size();
+        List<Long> removingList = collection.getStudyGroups().entrySet().stream()
+                .filter(element -> comparator.compare(element.getValue(), choosenGroup) > 0)
+                .map(Map.Entry::getKey)
+                .toList();
+        long count = removingList.size();
+        removingList.forEach(key -> collection.getStudyGroups().remove(key));
+
         if( count == 0 )
         {
             consol.printInfo("Совпадений не найдено!");
