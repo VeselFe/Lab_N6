@@ -1,9 +1,10 @@
 package ru.itmo.client.network;
 
-import ru.itmo.lab.commonNet.Response;
-import ru.itmo.lab.model.StudyGroup;
-import ru.itmo.lab.myExceptions.ConnectionException;
-import ru.itmo.lab.myExceptions.ResponseException;
+import ru.itmo.lab.common.commonNet.Request;
+import ru.itmo.lab.common.commonNet.Response;
+import ru.itmo.lab.common.model.StudyGroup;
+import ru.itmo.lab.common.myExceptions.ConnectionException;
+import ru.itmo.lab.common.myExceptions.ResponseException;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -20,7 +21,7 @@ public class NetworkManager
         this.channel = channel;
     }
 
-    public void network( ru.itmo.lab.commonNet.Request request ) throws IOException
+    public void network( Request request ) throws IOException
     {
         try
         {
@@ -32,7 +33,7 @@ public class NetworkManager
         }
     }
 
-    private void sendRequest( ru.itmo.lab.commonNet.Request request ) throws IOException
+    private void sendRequest( Request request ) throws IOException
     {
         ByteArrayOutputStream byteOS = new ByteArrayOutputStream();
         ObjectOutputStream objectOS = new ObjectOutputStream( byteOS );

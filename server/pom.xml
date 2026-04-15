@@ -26,7 +26,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>ru.itmo.lab.Server</mainClass>
+                            <mainClass>ru.itmo.server.Server</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

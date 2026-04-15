@@ -1,15 +1,16 @@
 package ru.itmo.client.clientTerminal;
 
-import ru.itmo.lab.myExceptions.ConnectionException;
-import ru.itmo.lab.myExceptions.ResponseException;
+import ru.itmo.lab.common.myExceptions.ConnectionException;
+import ru.itmo.lab.common.myExceptions.ResponseException;
 import ru.itmo.client.network.NetworkManager;
-import ru.itmo.lab.commonNet.Request;
-import ru.itmo.lab.terminal.GenericConsoleHandler;
-import ru.itmo.lab.terminal.*;
-import ru.itmo.lab.interfaces.IO_Handler;
-import ru.itmo.lab.model.Person;
-import ru.itmo.lab.model.StudyGroup;
-import ru.itmo.lab.myExceptions.CreationException;
+import ru.itmo.lab.common.commonNet.Request;
+import ru.itmo.lab.common.terminal.GenericConsoleHandler;
+import ru.itmo.lab.common.terminal.PersonReader;
+import ru.itmo.lab.common.terminal.StudyGroupReader;
+import ru.itmo.lab.common.interfaces.IO_Handler;
+import ru.itmo.lab.common.model.Person;
+import ru.itmo.lab.common.model.StudyGroup;
+import ru.itmo.lab.common.myExceptions.CreationException;
 
 import java.util.Scanner;
 /**

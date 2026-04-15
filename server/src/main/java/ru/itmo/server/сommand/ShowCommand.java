@@ -1,0 +1,54 @@
+package ru.itmo.server.сommand;
+
+import ru.itmo.lab.common.interfaces.Command;
+import ru.itmo.server.manager.collection.CollectionManager;
+import ru.itmo.lab.common.model.StudyGroup;
+import ru.itmo.lab.common.interfaces.IO_Handler;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
+
+
+/**
+ * Команда вывода всех элементов коллекции в коносль
+ */
+public class ShowCommand implements Command
+{
+    private Hashtable<Long, StudyGroup> collection;
+    public ShowCommand( CollectionManager newCollection )
+    {
+        collection = newCollection.getStudyGroups();
+    }
+
+    @Override
+    public void execute( IO_Handler consol )
+    {
+        String flag = "";
+        consol.printInfo("Элементы коллекции: ");
+        consol.printInfo("***************************************");
+        Set<Map.Entry<Long, StudyGroup>> collectionLikeSet = collection.entrySet();
+        if( collectionLikeSet.isEmpty() )
+        {
+            consol.printInfo("В колекции отсутствуют элементы!");
+        }
+        else
+        {
+            collectionLikeSet.stream().forEach(element -> {
+                consol.printInfo(element.getKey() + ": " + element.getValue().getName());
+                consol.printInfo("Подробная информация о " + element.getKey() + "-ом элеменете коллеции:\n" + element.getValue().getInformation());
+            });
+        }
+        consol.printInfo("***************************************\n");
+    }
+    @Override
+    public String getName()
+    {
+        return "show";
+    }
+    @Override
+    public String getDescription()
+    {
+        return "вывести все элементы коллекции в строковом представлении";
+    }
+
+}

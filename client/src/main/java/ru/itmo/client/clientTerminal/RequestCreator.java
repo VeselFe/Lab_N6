@@ -1,14 +1,13 @@
 package ru.itmo.client.clientTerminal;
 
-import ru.itmo.lab.commonNet.Request;
-import ru.itmo.lab.interfaces.IO_Handler;
-import ru.itmo.lab.model.Person;
-import ru.itmo.lab.model.StudyGroup;
-import ru.itmo.lab.myEnums.Commands;
-import ru.itmo.lab.myExceptions.CommandException;
-import ru.itmo.lab.myRecords.FieldDescriptor;
-import ru.itmo.lab.myRecords.Lab5FieldDescriptor;
-import ru.itmo.lab.myRecords.UpdatedFieldDescriptor;
+import ru.itmo.lab.common.commonNet.Request;
+import ru.itmo.lab.common.interfaces.IO_Handler;
+import ru.itmo.lab.common.model.Person;
+import ru.itmo.lab.common.model.StudyGroup;
+import ru.itmo.lab.common.myEnums.Commands;
+import ru.itmo.lab.common.myExceptions.CommandException;
+import ru.itmo.lab.common.myRecords.Lab5FieldDescriptor;
+import ru.itmo.lab.common.myRecords.UpdatedFieldDescriptor;
 
 public class RequestCreator 
 {

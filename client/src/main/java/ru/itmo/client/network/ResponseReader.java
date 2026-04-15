@@ -1,6 +1,6 @@
 package ru.itmo.client.network;
 
-import ru.itmo.lab.commonNet.Response;
+import ru.itmo.lab.common.commonNet.Response;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
