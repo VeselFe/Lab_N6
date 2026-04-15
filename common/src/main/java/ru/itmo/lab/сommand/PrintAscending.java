@@ -5,6 +5,8 @@ import ru.itmo.lab.manager.collection.CollectionManager;
 import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.interfaces.IO_Handler;
 
+import java.util.List;
+
 /**
  * Команда для отсортированного по названию вывода всех элементов коллекции
  */
@@ -22,11 +24,11 @@ public class PrintAscending implements Command
         String flag = "";
         consol.printInfo("Элементы коллекции в отсортированном порядке: ");
         consol.printInfo("***************************************");
-        for (StudyGroup element : collectionManager.getSortedCollection())
-        {
-            consol.printInfo(flag = element.getInformation());
-        }
-        if( flag == "" )
+        List<StudyGroup> sortedGroups = collectionManager.getSortedCollection().stream()
+                .toList();
+        sortedGroups.forEach(group -> consol.printInfo(group.getInformation()));
+
+        if( sortedGroups.isEmpty() )
         {
             consol.printInfo("В колекции отсутствуют элементы!");
         }
