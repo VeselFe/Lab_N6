@@ -47,10 +47,9 @@ public class RequestCreator
                     Long id = Long.parseLong(args[1]);
                     console.printInfo("Какой параметр Вы хотите обновить?\n" +
                             "===========================================");
-                    for (UpdatedFieldDescriptor element : Lab5FieldDescriptor.UPDATED_FIELDS)
-                    {
-                        console.printInfo(element.name());
-                    }
+                    Lab5FieldDescriptor.UPDATED_FIELDS.stream()
+                            .map(UpdatedFieldDescriptor::name)
+                            .forEach(fieldName -> console.printInfo(fieldName));
                     console.printInfo("===========================================");
                     console.printRequest("Введите название параметра: ");
                     String updated_name = console.readline().trim();
