@@ -6,6 +6,7 @@ import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.myExceptions.CommandException;
 import ru.itmo.lab.interfaces.IO_Handler;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,17 +44,14 @@ public class FilterStartsWithName implements CommandWithArgs
             return;
         }
 
-        String flag = "";
-        for( Map.Entry<Long, StudyGroup> element : collection.getStudyGroups().entrySet() )
-        {
-            if(element.getValue().getName().startsWith(tempName))
-            {
-                flag = element.getKey() + ": " + element.getValue().getName();
-                consol.printInfo(flag);
-                consol.printInfo("Подробная информация о " + element.getKey() + "-ом элеменете коллеции:\n" + element.getValue().getInformation());
-            }
-        }
-        if( flag.isEmpty() )
+        var filteredGroups = collection.getStudyGroups().entrySet().stream()
+                .filter(entry -> entry.getValue().getName().startsWith(tempName))
+                .toList();
+        filteredGroups.forEach(group -> {
+            consol.printInfo(group.getKey() + ": " + group.getValue().getName());
+            consol.printInfo("Подробная информация о " + group.getKey() + "-ом элеменете коллеции:\n" + group.getValue().getInformation());
+        });
+        if( filteredGroups.isEmpty() )
         {
             consol.printInfo("Не найдено ни одного элемента с именем, начинающимся со строки '" + tempName + "'!");
         }
@@ -61,7 +59,7 @@ public class FilterStartsWithName implements CommandWithArgs
     @Override
     public String getName()
     {
-        return "filter_starts_with_name   { name }";
+        return "filter_starts_with_name { name }";
     }
     @Override
     public String getDescription()
