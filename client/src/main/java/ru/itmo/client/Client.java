@@ -10,7 +10,7 @@ import java.nio.channels.SocketChannel;
 public class Client
 {
     private static final String host = "localhost";
-    private static final int port = 8080;
+    private static final int port = 3030;
     private static final int connectionDelay = 5000;
 
     public static void main(String[] args)

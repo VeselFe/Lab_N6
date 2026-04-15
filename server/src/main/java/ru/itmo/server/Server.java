@@ -17,10 +17,13 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 public class Server
 {
-    private static final int port = 8080;
+    public static final Logger logger = LoggerFactory.getLogger(Server.class);
+    private static final int port = 3030;
 
     public static void main(String[] args)
     {
@@ -36,26 +39,26 @@ public class Server
         console.setProvider(invoker);
 
         /// Сеть
-        console.printInfo("Сервер запустился. Порт: " + port);
+        logger.info("Сервер запустился. Порт: " + port);
         try( ServerSocket serverSocket = new ServerSocket(port) )
         {
             while( true )
             {
-                console.techPrint("Ожидание подключения клиента...");
+                logger.info("Ожидание подключения клиента...");
                 Socket clientSocket = serverSocket.accept();
-                console.printInfo("Клиент подключен: " + clientSocket.getInetAddress());
+                logger.info("Клиент подключен: " + clientSocket.getInetAddress());
                 handleClient(clientSocket, console, mainProccessor);
             }
         }
         catch( IOException e )
         {
-            console.printError("Ошибка сервера: " + e.getMessage());
+            logger.error("Ошибка сервера: " + e.getMessage());
         }
     }
 
     public static void handleClient( Socket clientSocket, ServerConsoleHandler console, CommandProccessor proccessor )
     {
-        console.printInfo("Потоки ввода-вывода инициализированы.");
+        logger.info("Потоки ввода-вывода инициализированы.");
         CommandProccessor.restartServerProgramm();
         while( !clientSocket.isClosed() )
         {
@@ -68,56 +71,56 @@ public class Server
                 // логика обработки поступившей информации
                 // читаем запрос
                 Request request = RequestReader.read(input);
-                console.techPrint("Получен запрос: " + request.getCommandType() + "\n");
+                logger.info("Получен запрос: " + request.getCommandType() + "\n");
 
                 // обрабатываем
                 Response response = proccessor.ProcessRequest( request );
 
                 if( proccessor.isProgrammFinished() )
                 {
-                    console.printInfo("Клиент завершил работу приложения.");
-                    console.printInfo("Сохранение коллекции..");
+                    logger.info("Клиент завершил работу приложения.");
+                    logger.info("Сохранение коллекции..");
                     proccessor.saveCollection();
-                    console.printInfo("Колекция успешно сохранена!");
+                    logger.info("Колекция успешно сохранена!");
                     ObjectOutputStream output = new ObjectOutputStream(os);
                     // отправляем обратно ответ
                     ResponseSender.sendResponse(output, response);
-                    console.printInfo("Завершение данной сессии...");
+                    logger.info("Завершение данной сессии...");
                     break;
                 }
-                console.printInfo("Запрос обработан!");
-                console.techPrint("------------------------------------------");
-                console.techPrint("Success: " + response.isSuccess() + ";");
-                console.techPrint("Message: " + response.getMessage() + ";");
-                console.techPrint("------------------------------------------");
+                logger.info("Запрос обработан!");
+                logger.info("------------------------------------------");
+                logger.info("Success: " + response.isSuccess() + ";");
+                logger.info("Message: " + response.getMessage() + ";");
+                logger.info("------------------------------------------");
 
                 ObjectOutputStream output = new ObjectOutputStream(os);
                 // отправляем обратно ответ
                 ResponseSender.sendResponse(output, response);
-                console.printInfo("Ответ отправлен!\n");
+                logger.info("Ответ отправлен!\n");
             }
             catch( ClassNotFoundException e )
             {
-                console.printError("Некорректные полученные данные");
+                logger.error("Некорректные полученные данные");
             }
             catch( EOFException e )
             {
-                console.printInfo("Клиент завершил сессию.");
+                logger.info("Клиент завершил сессию.");
                 break;
             }
             catch( SocketException e )
             {
-                console.printError("Соединение с клиентом потеряно.");
+                logger.error("Соединение с клиентом потеряно.");
                 break;
             }
             catch( IOException e )
             {
-                console.printError("Ошибка потоков ввода-вывода: " + e.getMessage());
+                logger.error("Ошибка потоков ввода-вывода: " + e.getMessage());
                 break;
             }
             catch ( Exception e )
             {
-                console.printError("Неизвестная ошибка при обработке запроса: " + e.getMessage());
+                logger.error("Неизвестная ошибка при обработке запроса: " + e.getMessage());
             }
         }
         try
@@ -129,9 +132,9 @@ public class Server
         }
         catch (IOException e)
         {
-            console.printError("Ошибка при закрытии сокета.");
+            logger.error("Ошибка при закрытии сокета.");
         }
-        console.printInfo("Сессия завершена!\n");
+        logger.info("Сессия завершена!\n");
     }
 
 }

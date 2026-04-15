@@ -105,7 +105,6 @@ public class NetworkManager
         }
         catch( InterruptedException e )
         {
-            // Восстанавливаем статус прерывания для текущего потока
             Thread.currentThread().interrupt();
             throw new ConnectionException("Ожидание ответа прерывано.");
         }
@@ -117,19 +116,18 @@ public class NetworkManager
         {
             Thread.sleep(50);
             int extraBytes;
-            while ((extraBytes = channel.read(buffer)) > 0) {
-                Thread.sleep(1);
-            }
+            while( (extraBytes = channel.read(buffer)) > 0 ) {}
         }
-        catch (InterruptedException e) {
+        catch (InterruptedException e)
+        {
             Thread.currentThread().interrupt();
         }
 
         buffer.flip();
 
-        if (buffer.remaining() < 4)
+        if( buffer.remaining() < 4 )
         {
-            throw new IOException("Пришло слишком мало данных (меньше заголовка)");
+            throw new IOException("Пришло слишком мало данных");
         }
 
         byte[] data = new byte[buffer.remaining()];

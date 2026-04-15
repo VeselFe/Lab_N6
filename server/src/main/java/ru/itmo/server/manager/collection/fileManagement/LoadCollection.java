@@ -1,5 +1,7 @@
 package ru.itmo.server.manager.collection.fileManagement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.itmo.lab.common.interfaces.OutputHandler;
 import ru.itmo.server.manager.collection.CollectionManager;
 import ru.itmo.lab.common.model.StudyGroup;
@@ -11,6 +13,7 @@ import java.util.Hashtable;
  */
 public class LoadCollection
 {
+    public static final Logger logger = LoggerFactory.getLogger(LoadCollection.class);
     private final CollectionManager collection;
     private final String fileName;
     private final GroupsFileManager fileManager;
@@ -35,7 +38,7 @@ public class LoadCollection
             {
                 collection.getStudyGroups().put(key, loadedCollection.get( key ));
             }
-            printer.printInfo("Загружено " + collection.getStudyGroups().size() + " групп(-ы).\n");
+            logger.info("Загружено " + collection.getStudyGroups().size() + " групп(-ы).\n");
         }
         catch( Exception e )
         {

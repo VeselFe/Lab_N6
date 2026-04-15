@@ -53,7 +53,7 @@ public class GroupsFileManager extends FileManager<Long, StudyGroup>
         initialXStream.autodetectAnnotations(true);
 
         initialXStream.allowTypesByWildcard(new String[] {
-                "ru.itmo.lab.model.**",
+                "ru.itmo.lab.common.model.**",
                 "java.util.Hashtable",
                 "java.util.Map"
         });
