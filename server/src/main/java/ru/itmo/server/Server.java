@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 public class Server
 {
     public static final Logger logger = LoggerFactory.getLogger(Server.class);
-    private static final int port = 3030;
+    private static final int port = 8080;
 
     public static void main(String[] args)
     {
@@ -76,18 +76,6 @@ public class Server
                 // обрабатываем
                 Response response = proccessor.ProcessRequest( request );
 
-                if( proccessor.isProgrammFinished() )
-                {
-                    logger.info("Клиент завершил работу приложения.");
-                    logger.info("Сохранение коллекции..");
-                    proccessor.saveCollection();
-                    logger.info("Колекция успешно сохранена!");
-                    ObjectOutputStream output = new ObjectOutputStream(os);
-                    // отправляем обратно ответ
-                    ResponseSender.sendResponse(output, response);
-                    logger.info("Завершение данной сессии...");
-                    break;
-                }
                 logger.info("Запрос обработан!");
                 logger.info("------------------------------------------");
                 logger.info("Success: " + response.isSuccess() + ";");
@@ -98,6 +86,7 @@ public class Server
                 // отправляем обратно ответ
                 ResponseSender.sendResponse(output, response);
                 logger.info("Ответ отправлен!\n");
+                break;
             }
             catch( ClassNotFoundException e )
             {
@@ -136,5 +125,19 @@ public class Server
         }
         logger.info("Сессия завершена!\n");
     }
+/// Для обработки серверных команд
+//                    if( proccessor.isProgrammFinished() )
+//    {
+//        logger.info("Клиент завершил работу приложения.");
+//        logger.info("Сохранение коллекции..");
+//        proccessor.saveCollection();
+//        logger.info("Колекция успешно сохранена!");
+//        ObjectOutputStream output = new ObjectOutputStream(os);
+//         отправляем обратно ответ
+//        ResponseSender.sendResponse(output, response);
+//        logger.info("Завершение данной сессии...");
+//        break;
+//    }
+
 
 }

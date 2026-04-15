@@ -44,7 +44,7 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
     @Override
     public void welcomMessage()
     {
-        print("Клиентское приложение запущено. Введите 'help' для просмотра возможных команд.");
+        print("Введите 'help' для просмотра возможных команд.");
     }
     public void initRequestCreator( IO_Handler ioHandler )
     {

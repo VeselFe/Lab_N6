@@ -10,35 +10,16 @@ import java.nio.channels.SocketChannel;
 public class Client
 {
     private static final String host = "localhost";
-    private static final int port = 3030;
+    private static final int port = 8080;
     private static final int connectionDelay = 5000;
 
     public static void main(String[] args)
     {
         ClientConsoleHandler console = new ClientConsoleHandler();
         console.initRequestCreator( new ClientConsoleHandler() );
-        while( true )
-        {
-            console.printRequest("Выводить коллекцию после получения результатов? (y/n): ");
-            String ans = console.readline();
-            ans = ans.toLowerCase().trim();
-            if(ans.equals("y") || ans.equals("yes") || ans.equals("да"))
-            {
-                console.turnPrinterCollection(true);
-                break;
-            }
-            else if(ans.equals("n") || ans.equals("no") || ans.equals("нет"))
-            {
-                console.turnPrinterCollection(false);
-                break;
-            }
-            else
-            {
-                console.printError("Некорректный ввод. Попробуйте снова.\n");
-            }
-        }
 
-        while( true )
+        boolean exit = false;
+        while( !exit )
         {
             try( SocketChannel channel = connectToServer() )
             {
@@ -48,11 +29,7 @@ public class Client
                     console.setProvider(networkManager);
                     console.welcomMessage();
 
-                    boolean exit = false;
-                    while (!exit)
-                    {
-                        exit = console.executing();
-                    }
+                    exit = console.executing();
                     if (exit) break;
                 }
             }
@@ -68,7 +45,7 @@ public class Client
         SocketChannel socketChannel = null;
         boolean conection = false;
         ClientConsoleHandler console = new ClientConsoleHandler();
-        console.printInfo("Подключение к серверу " + host + ":" + port);
+        console.printInfo("Клиент подключен к серверу " + host + ":" + port);
 
         while( !conection )
         {

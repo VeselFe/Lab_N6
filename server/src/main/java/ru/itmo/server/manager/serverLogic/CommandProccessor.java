@@ -39,7 +39,7 @@ public class CommandProccessor
             String arg = clientRequest.getArgument();
             UpdatedFieldDescriptor updatedField = clientRequest.getUpdatedField();
             StudyGroup newGroup = clientRequest.getGroup();
-            Person newAdmin = clientRequest.getAdmin() ;
+            Person newAdmin = clientRequest.getAdmin();
 
             logger.debug("Получен запрос");
             logger.debug("cmd type: " + (name != null ? name : "null"));
