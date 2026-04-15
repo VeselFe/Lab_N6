@@ -39,16 +39,44 @@ public class Server
         new Launcher(mainCollection, console).launchCollection();
         console.setProvider(invoker);
 
+        Thread handleServerTerminal = new Thread(() -> {
+            ServerConsoleHandler terminal = new ServerConsoleHandler();
+            invoker.initIOput(terminal);
+            logger.info("Серверный терминал запущен.");
+            while( true )
+            {
+                String adminCommand = terminal.readline();
+                logger.info("Получена команда от Администратора сервера: " + adminCommand);
+                switch(adminCommand.toLowerCase().trim())
+                {
+                    case "exit" -> invoker.executeServerCommand("exit");
+                    case "save" -> invoker.executeServerCommand("save");
+                    default -> logger.error("Неизвестная серверная команда");
+                }
+            }
+        });
+        handleServerTerminal.setDaemon(true);
+        handleServerTerminal.start();
+
         /// Сеть
         logger.info("Сервер запустился. Порт: " + port);
         try( ServerSocket serverSocket = new ServerSocket(port) )
         {
-            while( true )
+            while( !mainProccessor.isProgrammFinished() )
             {
                 logger.info("Ожидание подключения клиента...");
                 Socket clientSocket = serverSocket.accept();
                 logger.info("Клиент подключен: " + clientSocket.getInetAddress());
                 handleClient(clientSocket, mainProccessor);
+                if( mainProccessor.isProgrammFinished() )
+                {
+                    logger.info("Администратор завершил работу сервера.");
+                    logger.info("Сохранение коллекции..");
+                    mainProccessor.saveCollection();
+                    logger.info("Колекция успешно сохранена!");
+                    logger.info("Завершение работы сервера");
+                    break;
+                }
             }
         }
         catch( IOException e )
@@ -126,19 +154,4 @@ public class Server
         }
         logger.info("Сессия завершена!\n");
     }
-/// Для обработки серверных команд
-//                    if( proccessor.isProgrammFinished() )
-//    {
-//        logger.info("Клиент завершил работу приложения.");
-//        logger.info("Сохранение коллекции..");
-//        proccessor.saveCollection();
-//        logger.info("Колекция успешно сохранена!");
-//        ObjectOutputStream output = new ObjectOutputStream(os);
-//         отправляем обратно ответ
-//        ResponseSender.sendResponse(output, response);
-//        logger.info("Завершение данной сессии...");
-//        break;
-//    }
-
-
 }

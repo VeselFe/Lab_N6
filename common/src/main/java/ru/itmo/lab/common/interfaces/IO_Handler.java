@@ -7,9 +7,8 @@ import ru.itmo.lab.common.model.StudyGroup;
 /**
  * Интерфейс обработки консольного ввода-вывода для команд имеющий вводные значение и вывод резуьтата
  */
-public interface IO_Handler extends OutputHandler
+public interface IO_Handler extends OutputHandler, InputHandler
 {
-    String readline();
     StudyGroup readNewStudyGroup();
     Person readPerson();
 }

@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public interface InvokerActions
 {
-    public void initIOput( IO_Handler ioHandler );
+    public void initIOput( OutputHandler oHandler );
     public void addCommand( String name, Command newCommand );
     public void execute(  String name,
                           Long id,

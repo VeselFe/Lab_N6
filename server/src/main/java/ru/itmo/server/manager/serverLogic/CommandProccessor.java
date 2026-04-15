@@ -65,10 +65,7 @@ public class CommandProccessor
                     .buildResponse();
         }
     }
-    public static void stopServerProgramm()
-    {
-        exit = true;
-    }
+    public static void stopServerProgramm() { exit = true; }
     public static void restartServerProgramm() { exit = false; }
     public static List<StudyGroup> getSortedGroups() { return sortedByNameGroup; }
     public void setSortedByNameGroup() { sortedByNameGroup = serverCollectionManager.getSortedByNameCollection(); }

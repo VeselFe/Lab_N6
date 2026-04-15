@@ -1,9 +1,14 @@
 package ru.itmo.server.ioHandlers;
 
+import ru.itmo.lab.common.interfaces.InputHandler;
 import ru.itmo.lab.common.interfaces.OutputHandler;
+import ru.itmo.lab.common.model.Person;
+import ru.itmo.lab.common.model.StudyGroup;
 import ru.itmo.lab.common.terminal.GenericConsoleHandler;
 import ru.itmo.lab.common.interfaces.IO_Handler;
 import ru.itmo.server.manager.serverLogic.Invoker;
+
+import java.util.Scanner;
 
 /**
  * Консольный обработчик вывода для лабораторной работы №6.
@@ -18,8 +23,9 @@ import ru.itmo.server.manager.serverLogic.Invoker;
  * </ul>
  */
 public class ServerConsoleHandler extends GenericConsoleHandler<Invoker>
-        implements OutputHandler
+        implements InputHandler, OutputHandler
 {
+    private Scanner scanner = new Scanner(System.in);
     public ServerConsoleHandler()
     {
     }
@@ -33,5 +39,8 @@ public class ServerConsoleHandler extends GenericConsoleHandler<Invoker>
         print("СЕРВЕР: <Ошибка> " + messege + "\n");
     }
     public void printRequest( String request ) {}
-    public void techPrint( String techMessege ) { print( techMessege ); }
+    public String readline()
+    {
+        return scanner.nextLine();
+    }
 }

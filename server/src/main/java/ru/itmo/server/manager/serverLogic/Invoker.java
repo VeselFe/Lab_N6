@@ -1,11 +1,13 @@
 package ru.itmo.server.manager.serverLogic;
 
 import ru.itmo.lab.common.interfaces.*;
+import ru.itmo.server.Server;
 import ru.itmo.server.manager.collection.CollectionManager;
 import ru.itmo.lab.common.model.Person;
 import ru.itmo.lab.common.model.StudyGroup;
 import ru.itmo.lab.common.myExceptions.CommandException;
 import ru.itmo.lab.common.myRecords.UpdatedFieldDescriptor;
+import ru.itmo.server.serverInterfaces.ServerCommand;
 import ru.itmo.server.serverInterfaces.ServerInvokerActions;
 import ru.itmo.server.сommand.*;
 
@@ -20,11 +22,12 @@ public class Invoker implements ServerInvokerActions
 {
     /** хранит все используемые пользовательские команды    */
     private final Map<String, Command> clientCommands;
-    private final Map<String, Command> serverCommands;
+    private final Map<String, ServerCommand> serverCommands;
     /** ссылка на обрабатываемую коллекцию    */
     private final CollectionManager ManagersCollection;
     /** обарботчик консоли    */
     private IO_Handler ioHandler;
+    private OutputHandler outputHandler;
 
     public Invoker( CollectionManager newManagersCollection )
     {
@@ -35,9 +38,9 @@ public class Invoker implements ServerInvokerActions
     }
 
     @Override
-    public void initIOput( IO_Handler newIO_Handler )
+    public void initIOput( OutputHandler newOHandler )
     {
-        ioHandler = newIO_Handler;
+        outputHandler = newOHandler;
     }
 
     /**
@@ -53,7 +56,6 @@ public class Invoker implements ServerInvokerActions
         addCommand("update_id", new UpdateIdCommand(ManagersCollection));
         addCommand("remove_key", new RemoveCommand(ManagersCollection));
         addCommand("clear", new ClearCommand(ManagersCollection));
-        addCommand("exit", new ExitCommand());
         addCommand("remove_greater", new RemoveGreater(ManagersCollection));
         addCommand("remove_lower", new RemoveLower(ManagersCollection));
         addCommand("remove_lower_key", new RomoveLowerKey(ManagersCollection));
@@ -63,7 +65,7 @@ public class Invoker implements ServerInvokerActions
 
         //addCommand("execute_script", new ExecuteScriptCommand(ManagersCollection));
         addServerCommand("save", new SaveCommand(ManagersCollection, "SavedCollection.txt"));
-        addServerCommand("show", new ShowCommand(ManagersCollection));
+        addServerCommand("exit", new ExitCommand());
     }
 
     /**
@@ -81,7 +83,7 @@ public class Invoker implements ServerInvokerActions
         }
         clientCommands.put(name, newCommand);
     }
-    protected void addServerCommand( String name, Command newCommand )
+    protected void addServerCommand(String name, ServerCommand newCommand )
     {
         if ( serverCommands.containsKey(name) )
         {
@@ -162,18 +164,18 @@ public class Invoker implements ServerInvokerActions
         {
             throw new CommandException("Пустая команда");
         }
-        Command serverCommand = serverCommands.get(name);
+        ServerCommand serverCommand = serverCommands.get(name);
         if( serverCommand == null )
         {
             throw new CommandException("Неизвестная команда: '" + name + "'");
         }
-        if( ioHandler == null )
+        if( outputHandler == null )
         {
             throw new CommandException("Не инициализирован канал для вывода технических сообщений!");
         }
         try
         {
-            serverCommand.execute( ioHandler );
+            serverCommand.execute( outputHandler );
         }
         catch( Exception e )
         {
