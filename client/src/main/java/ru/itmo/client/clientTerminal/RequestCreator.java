@@ -1,4 +1,4 @@
-package ru.itmo.lab.clientTerminal;
+package ru.itmo.client.clientTerminal;
 
 import ru.itmo.lab.commonNet.Request;
 import ru.itmo.lab.interfaces.IO_Handler;

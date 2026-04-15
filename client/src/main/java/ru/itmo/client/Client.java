@@ -1,7 +1,7 @@
-package ru.itmo.lab;
+package ru.itmo.client;
 
-import ru.itmo.lab.clientTerminal.ClientConsoleHandler;
-import ru.itmo.lab.network.NetworkManager;
+import ru.itmo.client.clientTerminal.ClientConsoleHandler;
+import ru.itmo.client.network.NetworkManager;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

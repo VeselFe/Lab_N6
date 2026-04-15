@@ -1,4 +1,4 @@
-package ru.itmo.lab.network;
+package ru.itmo.client.network;
 
 import ru.itmo.lab.commonNet.Response;
 

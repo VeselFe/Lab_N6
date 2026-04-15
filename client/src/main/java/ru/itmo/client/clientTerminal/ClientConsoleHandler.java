@@ -1,11 +1,8 @@
-package ru.itmo.lab.clientTerminal;
+package ru.itmo.client.clientTerminal;
 
-import ru.itmo.lab.commonNet.Response;
-import ru.itmo.lab.myEnums.Commands;
-import ru.itmo.lab.myExceptions.CommandException;
 import ru.itmo.lab.myExceptions.ConnectionException;
 import ru.itmo.lab.myExceptions.ResponseException;
-import ru.itmo.lab.network.NetworkManager;
+import ru.itmo.client.network.NetworkManager;
 import ru.itmo.lab.commonNet.Request;
 import ru.itmo.lab.terminal.GenericConsoleHandler;
 import ru.itmo.lab.terminal.*;
@@ -13,11 +10,7 @@ import ru.itmo.lab.interfaces.IO_Handler;
 import ru.itmo.lab.model.Person;
 import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.myExceptions.CreationException;
-import ru.itmo.lab.manager.serverLogic.Invoker;
-import ru.itmo.lab.myRecords.*;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Scanner;
 /**
  * Консольный обработчик ввода-вывода для лабораторной работы №5.
@@ -27,7 +20,6 @@ import java.util.Scanner;
  *
  * <p><b>Основное назначение:</b></p>
  * <ul>
- *   <li>Чтение пользовательских команд и их выполнение через {@link Invoker}</li>
  *   <li>Интерактивный ввод сложных объектов: {@link Person}, {@link StudyGroup}</li>
  *   <li>Форматированный вывод информационных сообщений, ошибок и запросов</li>
  *   <li>Управление жизненным циклом консольного приложения</li>

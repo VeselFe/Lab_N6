@@ -1,4 +1,4 @@
-package ru.itmo.lab.generators;
+package ru.itmo.lab.manager.collection.generators;
 
 import ru.itmo.lab.interfaces.IdGeneratorInterface;
 import ru.itmo.lab.manager.collection.CollectionManager;

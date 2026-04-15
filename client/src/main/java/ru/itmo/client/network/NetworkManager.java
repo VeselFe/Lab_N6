@@ -1,4 +1,4 @@
-package ru.itmo.lab.network;
+package ru.itmo.client.network;
 
 import ru.itmo.lab.commonNet.Response;
 import ru.itmo.lab.model.StudyGroup;
@@ -8,7 +8,6 @@ import ru.itmo.lab.myExceptions.ResponseException;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.util.Collection;
 import java.util.List;
 
 public class NetworkManager

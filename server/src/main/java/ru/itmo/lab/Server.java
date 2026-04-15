@@ -1,7 +1,7 @@
 package ru.itmo.lab;
 
 import ru.itmo.lab.commonNet.Response;
-import ru.itmo.lab.generators.BasicGenerator;
+import ru.itmo.lab.manager.collection.generators.BasicGenerator;
 import ru.itmo.lab.ioHandlers.ServerConsoleHandler;
 import ru.itmo.lab.manager.collection.CollectionManager;
 import ru.itmo.lab.manager.collection.fileManagement.GroupsFileManager;
