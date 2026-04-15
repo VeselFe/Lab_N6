@@ -2,11 +2,13 @@ package ru.itmo.lab.сommand;
 
 import ru.itmo.lab.interfaces.CommandWithKey;
 import ru.itmo.lab.manager.collection.CollectionManager;
+import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.myExceptions.CreationException;
 import ru.itmo.lab.interfaces.IO_Handler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -40,22 +42,26 @@ public class RomoveLowerKey implements CommandWithKey
     public void execute( IO_Handler consol )
     {
         long count = 0;
-        String deletedNames = "";
-        List<Long> keys = new ArrayList<>(collection.getStudyGroups().keySet());
-
         try
         {
-            for(Long id : keys)
+            List< Map.Entry<Long, StudyGroup> > removingList = collection.getStudyGroups().entrySet().stream()
+                    .filter(element -> element.getKey() < Key)
+                    .toList();
+
+            if( removingList.isEmpty() )
+                consol.printInfo("Совпадений не найдено!");
+            else
             {
-                if(id < Key)
+                StringBuilder deletedNames = new StringBuilder();
+                for( var element : removingList )
                 {
-                    deletedNames = deletedNames + "\n" + (count+1) + ") " + collection.getStudyGroups().get(id).getName() +
-                    "   'id' = " + id;
-                    collection.getStudyGroups().remove(id);
                     count++;
+                    deletedNames.append("\n" + count + ") " + element.getValue().getName());
+                    deletedNames.append("   'id' = " + element.getKey());
                 }
+                removingList.forEach(element -> collection.getStudyGroups().remove(element.getKey()));
+                consol.printInfo("Было обнаружено и удалено " + removingList.size() + " элемента(-ов): " + deletedNames);
             }
-            consol.printInfo("Было обнаружено и удалено " + count + " элемента(-ов): " + deletedNames);
         }
         catch (Exception e)
         {
