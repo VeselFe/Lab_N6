@@ -17,6 +17,26 @@ public class Client
     {
         ClientConsoleHandler console = new ClientConsoleHandler();
         console.initRequestCreator( new ClientConsoleHandler() );
+        while( true )
+        {
+            console.printRequest("Выводить коллекцию после получения результатов? (y/n): ");
+            String ans = console.readline();
+            ans = ans.toLowerCase().trim();
+            if(ans.equals("y") || ans.equals("yes") || ans.equals("да"))
+            {
+                console.turnPrinterCollection(true);
+                break;
+            }
+            else if(ans.equals("n") || ans.equals("no") || ans.equals("нет"))
+            {
+                console.turnPrinterCollection(false);
+                break;
+            }
+            else
+            {
+                console.printError("Некорректный ввод. Попробуйте снова.\n");
+            }
+        }
 
         while( true )
         {

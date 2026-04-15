@@ -28,7 +28,7 @@ public class Server
         CollectionManager mainCollection = CollectionManager.createCollection();
         StudyGroup.setIdGenerator( new BasicGenerator(mainCollection) );
         Invoker invoker = new Invoker( mainCollection );
-        CommandProccessor mainProccessor = new CommandProccessor( invoker );
+        CommandProccessor mainProccessor = new CommandProccessor( invoker, mainCollection );
 
         ServerConsoleHandler console = new ServerConsoleHandler();
         GroupsFileManager.setErrorPrinter(console);

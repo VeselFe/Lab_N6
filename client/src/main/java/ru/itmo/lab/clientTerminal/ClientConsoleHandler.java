@@ -16,6 +16,8 @@ import ru.itmo.lab.myExceptions.CreationException;
 import ru.itmo.lab.manager.serverLogic.Invoker;
 import ru.itmo.lab.myRecords.*;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Scanner;
 /**
  * Консольный обработчик ввода-вывода для лабораторной работы №5.
@@ -34,6 +36,7 @@ import java.util.Scanner;
 public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
     implements IO_Handler
 {
+    private boolean printCollection = false;
     private final Scanner scanner = new Scanner(System.in);
     private boolean stop = false;
     private String input;
@@ -42,6 +45,8 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
     public ClientConsoleHandler()
     {
     }
+
+    public void turnPrinterCollection( boolean state ) { printCollection = state; }
 
     @Override
     public void welcomMessage()
@@ -68,14 +73,15 @@ public class ClientConsoleHandler extends GenericConsoleHandler<NetworkManager>
             if( input.trim().toLowerCase().equals("exit") )
             {
                 stop();
-                Thread.sleep(500);
-                //return stop;
             }
             if( request != null )
             {
                 provider.network(request);
-                serverResponse = provider.getServerResponse();
-                if( !stop ) printInfo(serverResponse);
+                serverResponse = provider.getServerResponse(printCollection);
+                if( !stop )
+                {
+                    printInfo(serverResponse);
+                }
                 else
                 {
                     printInfo("Соединение успешно завершено!");

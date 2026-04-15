@@ -5,6 +5,7 @@ import ru.itmo.lab.manager.collection.CollectionManager;
 import ru.itmo.lab.model.Person;
 import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.myExceptions.CommandException;
+import ru.itmo.lab.myRecords.UpdatedFieldDescriptor;
 import ru.itmo.lab.serverInterfaces.ServerInvokerActions;
 import ru.itmo.lab.сommand.*;
 
@@ -93,7 +94,7 @@ public class Invoker implements ServerInvokerActions
     public void execute(String name,
                         Long id,
                         String arg,
-                        String updatedField,
+                        UpdatedFieldDescriptor updatedField,
                         StudyGroup newGroup,
                         Person newAdmin ) throws CommandException
     {
@@ -108,6 +109,15 @@ public class Invoker implements ServerInvokerActions
         }
         try
         {
+            if( cmd instanceof Updatable )
+            {
+                Updatable updateCmd = ((Updatable) cmd);
+                updateCmd.setArgument(arg);
+                updateCmd.setUpID(id);
+                updateCmd.setUpdatedPerson(newAdmin);
+                updateCmd.setUpdatedFieldName(updatedField);
+                cmd.execute(ioHandler);
+            }
             if( cmd instanceof CommandWithKey )
             {
                 if ( id == null )
@@ -115,7 +125,6 @@ public class Invoker implements ServerInvokerActions
                     throw new CommandException("ID группы не определен");
                 }
                 ((CommandWithKey) cmd).getArgs( id );
-                                                                     ioHandler.printInfo("Ключ определен: " + id.toString());
                 cmd.execute(ioHandler);
             }
             else if( cmd instanceof CommandWithArgs )

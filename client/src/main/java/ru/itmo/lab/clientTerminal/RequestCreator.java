@@ -8,6 +8,7 @@ import ru.itmo.lab.myEnums.Commands;
 import ru.itmo.lab.myExceptions.CommandException;
 import ru.itmo.lab.myRecords.FieldDescriptor;
 import ru.itmo.lab.myRecords.Lab5FieldDescriptor;
+import ru.itmo.lab.myRecords.UpdatedFieldDescriptor;
 
 public class RequestCreator 
 {
@@ -42,11 +43,11 @@ public class RequestCreator
                             .buildRequest();
                 }
                 case "update_id" -> {
-                    if( args.length != 2 ) throw new CommandException("Ошибка получения аргументов: <команда> <аргумент");
+                    if( args.length != 2 ) throw new CommandException("Ошибка получения аргументов: <команда> <аргумент>");
                     Long id = Long.parseLong(args[1]);
                     console.printInfo("Какой параметр Вы хотите обновить?\n" +
                             "===========================================");
-                    for (FieldDescriptor element : Lab5FieldDescriptor.UPDATED_FIELDS)
+                    for (UpdatedFieldDescriptor element : Lab5FieldDescriptor.UPDATED_FIELDS)
                     {
                         console.printInfo(element.name());
                     }
@@ -59,7 +60,7 @@ public class RequestCreator
                         throw new CommandException("Поле ввода пусто!");
                     }
                     updated_name = updated_name.toLowerCase();
-                    for(FieldDescriptor element : Lab5FieldDescriptor.UPDATED_FIELDS)
+                    for(UpdatedFieldDescriptor element : Lab5FieldDescriptor.UPDATED_FIELDS)
                     {
                         if( updated_name.toLowerCase().equals(element.name().toLowerCase()) )
                         {
@@ -72,7 +73,7 @@ public class RequestCreator
                                         .setCommandType(name)
                                         .setID(id)
                                         .setPerson(newAdmin)
-                                        .setUpdatedField(updated_name)
+                                        .setUpdatedField(element)
                                         .buildRequest();
                             }
                             console.printRequest(element.request());
@@ -81,7 +82,7 @@ public class RequestCreator
                             return new Request.Builder()
                                     .setCommandType(name)
                                     .setArgument(value)
-                                    .setUpdatedField(updated_name)
+                                    .setUpdatedField(element)
                                     .setID(id)
                                     .buildRequest();
                         }

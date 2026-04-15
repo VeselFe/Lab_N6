@@ -4,6 +4,7 @@ import ru.itmo.lab.model.StudyGroup;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 public class Response implements Serializable
 {
@@ -11,7 +12,7 @@ public class Response implements Serializable
 
     private final boolean success;
     private final String message;
-    private final Collection<StudyGroup> collection;
+    private final List<StudyGroup> collection;
 
     public static Builder builder()
     {
@@ -28,7 +29,7 @@ public class Response implements Serializable
     {
         private boolean success = false;
         private String message = "";
-        private Collection<StudyGroup> collection = null;
+        private List<StudyGroup> collection = null;
 
         public Response buildResponse()
         {
@@ -45,7 +46,7 @@ public class Response implements Serializable
             this.message = message;
             return this;
         }
-        public Builder setCollection( Collection<StudyGroup> collection )
+        public Builder setSortedCollection( List<StudyGroup> collection )
         {
             this.collection = collection;
             return this;
@@ -54,5 +55,5 @@ public class Response implements Serializable
 
     public boolean isSuccess() { return success; }
     public String getMessage() { return message; }
-    public Collection<StudyGroup> getCollection() { return collection; }
+    public List<StudyGroup> getCollection() { return collection; }
 }

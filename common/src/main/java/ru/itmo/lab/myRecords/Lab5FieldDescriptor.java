@@ -1,5 +1,7 @@
 package ru.itmo.lab.myRecords;
 
+import ru.itmo.lab.model.Person;
+
 import java.util.List;
 
 public record Lab5FieldDescriptor()
@@ -51,20 +53,34 @@ public record Lab5FieldDescriptor()
                             "============================\n" +
                             "Введите семестр: ")
     );
-    public static final List<FieldDescriptor> UPDATED_FIELDS = List.of(
-            new FieldDescriptor("Name",
-                    "Введите новое имя: "),
-            new FieldDescriptor("Coordinates",
-                    "Введите новые координаты(X Y): "),
-            new FieldDescriptor("StudentCount",
-                    "Введите новое новое количество студентов: "),
-            new FieldDescriptor("ShoudBeExpelled",
-                    "Введите новое количество студентов, которых надо отчислить: "),
-            new FieldDescriptor("FormOfEducation",
-                    "Введите новую форму форму обучения(DISTANCE_EDUCATION, FULL_TIME_EDUCATION, EVENING_CLASSES): "),
-            new FieldDescriptor("Semester",
-                    "Введите семестр (FIRST, SECOND, THIRD, FIFTH, EIGHTH): "),
-            new FieldDescriptor("Group Admin",
-                    "Нужно заполнить анкету для нового админа: \n")
+    public static final List<UpdatedFieldDescriptor> UPDATED_FIELDS = List.of(
+            new UpdatedFieldDescriptor("Name",
+                             "Введите новое имя: ",
+                         "updateName",
+                                     String.class),
+            new UpdatedFieldDescriptor("Coordinates",
+                            "Введите новые координаты(X Y): ",
+                        "updateCoordinates",
+                                     String.class),
+            new UpdatedFieldDescriptor("StudentCount",
+                            "Введите новое новое количество студентов: ",
+                        "updateStudCount",
+                    String.class),
+            new UpdatedFieldDescriptor("ShoudBeExpelled",
+                            "Введите новое количество студентов, которых надо отчислить: ",
+                        "updateShBeExp" ,
+                    String.class),
+            new UpdatedFieldDescriptor("FormOfEducation",
+                            "Введите новую форму форму обучения(DISTANCE_EDUCATION, FULL_TIME_EDUCATION, EVENING_CLASSES): ",
+                        "updateFormOfEdu",
+                    String.class),
+            new UpdatedFieldDescriptor("Semester",
+                            "Введите семестр (FIRST, SECOND, THIRD, FIFTH, EIGHTH): ",
+                        "updateSem",
+                    String.class),
+            new UpdatedFieldDescriptor("Group Admin",
+                            "Нужно заполнить анкету для нового админа: \n",
+                        "updateAdmin",
+                    Person.class)
     );
 }

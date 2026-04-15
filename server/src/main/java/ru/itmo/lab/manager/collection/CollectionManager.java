@@ -77,6 +77,13 @@ public class CollectionManager
         groups.sort(null);
         return groups;
     }
+    public List<StudyGroup> getSortedByNameCollection()
+    {
+        List<StudyGroup> groups = new ArrayList<>(studyGroups.values());
+        StudyGroupByNameComparator comparator = new StudyGroupByNameComparator();
+        groups.sort(comparator);
+        return groups;
+    }
     /**
      * Возвращает текстовую информацию о коллекции в формате:
      * <pre>

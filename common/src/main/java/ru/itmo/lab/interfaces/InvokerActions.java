@@ -5,6 +5,7 @@ import ru.itmo.lab.interfaces.IO_Handler;
 import ru.itmo.lab.model.Person;
 import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.myExceptions.CommandException;
+import ru.itmo.lab.myRecords.UpdatedFieldDescriptor;
 
 import java.util.Map;
 
@@ -18,7 +19,7 @@ public interface InvokerActions
     public void execute(  String name,
                           Long id,
                           String arg,
-                          String updatedField,
+                          UpdatedFieldDescriptor updatedField,
                           StudyGroup newGroup,
                           Person newAdmin ) throws CommandException;
     public Map<String, Command> getCommands();

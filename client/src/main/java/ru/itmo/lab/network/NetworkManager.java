@@ -9,6 +9,7 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.Collection;
+import java.util.List;
 
 public class NetworkManager
 {
@@ -48,22 +49,31 @@ public class NetworkManager
         }
     }
 
-    public String getServerResponse() throws IOException, ClassNotFoundException
+    public String getServerResponse( boolean printCollection ) throws IOException, ClassNotFoundException
     {
         try
         {
             Response serverResponse = recieveResponse();
             boolean success = serverResponse.isSuccess();
             String responseMessage = serverResponse.getMessage();
-            Collection<StudyGroup> responeCollection = serverResponse.getCollection();
+            List<StudyGroup> responeCollection = serverResponse.getCollection();
+            StringBuilder printedCollection = new StringBuilder();
+            if(printCollection)
+            {
+                printedCollection.append("\nКоллекция после выполнения команды:\n");
+                for (StudyGroup element : responeCollection)
+                {
+                    printedCollection.append(element.getInformation() + "\n");
+                }
+            }
 
             if( success )
             {
-                return "Команда выполнена успешно:\n___________________\n" + responseMessage + "\n___________________\n";
+                return "Команда выполнена успешно:\n___________________\n" + responseMessage + "\n___________________\n" + printedCollection;
             }
             else
             {
-                return "Возникла ошибка при выполнении команды:\n___________________\n" + responseMessage + "\n___________________\n";
+                return "Возникла ошибка при выполнении команды:\n___________________\n" + responseMessage + "\n___________________\n" + printedCollection;
             }
         }
         catch (ClassNotFoundException e)

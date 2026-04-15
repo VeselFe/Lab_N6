@@ -3,6 +3,7 @@ package ru.itmo.lab.commonNet;
 import ru.itmo.lab.model.Person;
 import ru.itmo.lab.model.StudyGroup;
 import ru.itmo.lab.myExceptions.CommandException;
+import ru.itmo.lab.myRecords.UpdatedFieldDescriptor;
 
 import java.io.Serializable;
 
@@ -12,7 +13,7 @@ public class Request implements Serializable
 
     private final String commandType;
     private final String argument;
-    private final String updatedField;
+    private final UpdatedFieldDescriptor updatedField;
     private final Long idArg;
     private final StudyGroup group;
     private final Person admin;
@@ -32,7 +33,7 @@ public class Request implements Serializable
         return commandType;
     }
     public String getArgument() { return argument; }
-    public String getUpdatedField() { return updatedField; }
+    public UpdatedFieldDescriptor getUpdatedField() { return updatedField; }
     public Long getIdArg() { return idArg; }
     public StudyGroup getGroup() { return group; }
     public Person getAdmin() { return admin; }
@@ -40,7 +41,7 @@ public class Request implements Serializable
     public static class Builder
     {
         private String commandType = null;
-        private String updatedField = null;
+        private UpdatedFieldDescriptor updatedField = null;
         private String argument = null;
         private Long idArg = null;
         private StudyGroup group = null;
@@ -71,9 +72,9 @@ public class Request implements Serializable
             argument = newArgument;
             return this;
         }
-        public Builder setUpdatedField( String newUField )
+        public Builder setUpdatedField( UpdatedFieldDescriptor newUField )
         {
-            if( newUField.isEmpty() )
+            if( newUField == null )
             {
                 throw new CommandException("Некорректный аргумент команды!");
             }
