@@ -112,23 +112,7 @@ public class NetworkManager
         if( bytes == -1 )
             throw new ConnectionException("Сервер разорвал соединение");
 
-        try
-        {
-            Thread.sleep(50);
-            int extraBytes;
-            while( (extraBytes = channel.read(buffer)) > 0 ) {}
-        }
-        catch (InterruptedException e)
-        {
-            Thread.currentThread().interrupt();
-        }
-
         buffer.flip();
-
-        if( buffer.remaining() < 4 )
-        {
-            throw new IOException("Пришло слишком мало данных");
-        }
 
         byte[] data = new byte[buffer.remaining()];
         buffer.get(data);

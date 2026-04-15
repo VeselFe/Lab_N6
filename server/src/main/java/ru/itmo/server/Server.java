@@ -20,6 +20,7 @@ import java.net.SocketException;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
+
 public class Server
 {
     public static final Logger logger = LoggerFactory.getLogger(Server.class);
@@ -47,7 +48,7 @@ public class Server
                 logger.info("Ожидание подключения клиента...");
                 Socket clientSocket = serverSocket.accept();
                 logger.info("Клиент подключен: " + clientSocket.getInetAddress());
-                handleClient(clientSocket, console, mainProccessor);
+                handleClient(clientSocket, mainProccessor);
             }
         }
         catch( IOException e )
@@ -56,7 +57,7 @@ public class Server
         }
     }
 
-    public static void handleClient( Socket clientSocket, ServerConsoleHandler console, CommandProccessor proccessor )
+    public static void handleClient( Socket clientSocket, CommandProccessor proccessor )
     {
         logger.info("Потоки ввода-вывода инициализированы.");
         CommandProccessor.restartServerProgramm();
@@ -77,10 +78,10 @@ public class Server
                 Response response = proccessor.ProcessRequest( request );
 
                 logger.info("Запрос обработан!");
-                logger.info("------------------------------------------");
+                logger.info("<Началло запроса>");
                 logger.info("Success: " + response.isSuccess() + ";");
                 logger.info("Message: " + response.getMessage() + ";");
-                logger.info("------------------------------------------");
+                logger.info("<Конец запроса>");
 
                 ObjectOutputStream output = new ObjectOutputStream(os);
                 // отправляем обратно ответ
