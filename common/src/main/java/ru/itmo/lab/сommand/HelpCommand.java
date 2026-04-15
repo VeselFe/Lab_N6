@@ -4,6 +4,8 @@ import ru.itmo.lab.interfaces.Command;
 import ru.itmo.lab.interfaces.IO_Handler;
 import ru.itmo.lab.interfaces.InvokerActions;
 
+import java.util.Comparator;
+
 /**
  * Команда для вывода в консоль списка всех пользовательских команд
  */
@@ -21,10 +23,9 @@ public class HelpCommand implements Command
     {
         consol.printInfo("Список всех возможных команд:\n" +
                 "--------------------------------------------------------------");
-        for( Command command : invoker.getCommands().values() )
-        {
-            consol.printInfo(command.getName() + ": " + command.getDescription());
-        }
+        invoker.getCommands().values().stream()
+                .sorted(Comparator.comparing(Command::getName))
+                .forEach(cmd -> consol.printInfo(cmd.getName() + ": " + cmd.getDescription()));
     }
 
     @Override
