@@ -7,6 +7,9 @@ import ru.itmo.lab.myEnums.Semester;
 import ru.itmo.lab.myExceptions.CommandException;
 import ru.itmo.lab.interfaces.IO_Handler;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 /**
  * Команда для вывода элементов коллекции, отсортировав по семестру обучения
@@ -37,22 +40,20 @@ public class FilterBySemesterEnum implements CommandWithArgs
     @Override
     public void execute( IO_Handler consol )
     {
-        long count = 0;
-        for(StudyGroup group : collection.getStudyGroups().values())
-        {
-            if( group.getSemester().equals( sem ) )
-            {
-                consol.printInfo(group.getInformation());
-                count++;
-            }
-        }
-        if( count == 0 )
+        if( sem == null )
+            throw new CommandException("Не определен семестр для сравнения.");
+        List<StudyGroup> filteredGroups = collection.getStudyGroups().values().stream()
+                .filter(group -> group.getSemester().equals(sem))
+                .toList();
+
+        filteredGroups.forEach(group -> consol.printInfo(group.getInformation()));
+        if( filteredGroups.isEmpty() )
         {
             consol.printInfo("Совпадений не найдено!");
         }
         else
         {
-            consol.printInfo("Было найдено " + count + " совпадений.");
+            consol.printInfo("Было найдено " + filteredGroups.size() + " совпадений.");
         }
     }
     @Override
