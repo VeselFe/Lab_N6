@@ -22,10 +22,6 @@ abstract public class GenericConsoleHandler<T>
         this.provider = provider;
     }
 
-    protected String getInput( Scanner scanner )
-    {
-        return scanner.nextLine();
-    }
     final protected void print( String message ) { System.out.println(message); }
     final protected void printCurLine( String message ) { System.out.print(message); }
     protected void error( String messege ) { print("Ошибка: " + messege); }

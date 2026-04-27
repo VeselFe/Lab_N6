@@ -1,11 +1,14 @@
 package ru.itmo.server.сommand;
 
-import ru.itmo.lab.common.interfaces.CommandWithArgs;
+import org.slf4j.LoggerFactory;
+import ru.itmo.server.serverInterfaces.Command;
+import ru.itmo.server.serverInterfaces.CommandArgs;
+import ru.itmo.server.serverInterfaces.ExecuteResult;
+import ru.itmo.lab.common.myExceptions.CommandException;
+import ru.itmo.server.ioHandlers.CommandResult;
 import ru.itmo.server.manager.collection.CollectionManager;
 import ru.itmo.lab.common.model.StudyGroup;
 import ru.itmo.lab.common.myEnums.Semester;
-import ru.itmo.lab.common.myExceptions.CommandException;
-import ru.itmo.lab.common.interfaces.IO_Handler;
 
 import java.util.List;
 
@@ -13,9 +16,10 @@ import java.util.List;
 /**
  * Команда для вывода элементов коллекции, отсортировав по семестру обучения
  */
-public class FilterBySemesterEnum implements CommandWithArgs
+public class FilterBySemesterEnum implements Command
 {
     private final CollectionManager collection;
+    private String errorMessage;
     private Semester sem;
 
     public FilterBySemesterEnum( CollectionManager newCollection )
@@ -24,35 +28,44 @@ public class FilterBySemesterEnum implements CommandWithArgs
     }
 
     @Override
-    public void getArgs( String Args )
+    public ExecuteResult execute( CommandArgs args ) throws CommandException
     {
+        errorMessage = null;
         try
         {
-            sem = Semester.valueOf( Args.toUpperCase() );
+            sem = Semester.valueOf(args.getStringArg().toUpperCase().trim());
         }
-        catch (IllegalArgumentException e)
+        catch( NullPointerException e )
         {
-            throw new CommandException("Неверно введен семестр. Варианты: FIRST, SECOND, THIRD, FIFTH, EIGHTH");
+            errorMessage = "Некорректное количество аргументов для данной функции";
         }
-    }
-
-    @Override
-    public void execute( IO_Handler consol )
-    {
-        if( sem == null )
-            throw new CommandException("Не определен семестр для сравнения.");
+        catch( IllegalArgumentException e )
+        {
+            errorMessage = "Неверно введен семестр. Варианты: FIRST, SECOND, THIRD, FIFTH, EIGHTH";
+        }
+        if( errorMessage != null )
+        {
+            LoggerFactory.getLogger(FilterStartsWithName.class).error(errorMessage);
+            throw new CommandException(errorMessage);
+        }
         List<StudyGroup> filteredGroups = collection.getStudyGroups().values().stream()
                 .filter(group -> group.getSemester().equals(sem))
                 .toList();
-
-        filteredGroups.forEach(group -> consol.printInfo(group.getInformation()));
+        StringBuilder result = new StringBuilder();
+        filteredGroups.forEach(group -> result.append(group.getInformation() + "\n"));
         if( filteredGroups.isEmpty() )
         {
-            consol.printInfo("Совпадений не найдено!");
+            return new CommandResult.Builder()
+                    .setSuccess( true )
+                    .setMessage("Совпадений не найдено!")
+                    .buildCommandResult();
         }
         else
         {
-            consol.printInfo("Было найдено " + filteredGroups.size() + " совпадений.");
+            return new CommandResult.Builder()
+                    .setSuccess( true )
+                    .setMessage("Было найдено " + filteredGroups.size() + " совпадений: \n" + result.toString())
+                    .buildCommandResult();
         }
     }
     @Override

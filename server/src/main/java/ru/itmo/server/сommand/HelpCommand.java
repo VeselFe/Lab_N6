@@ -1,8 +1,12 @@
 package ru.itmo.server.сommand;
 
-import ru.itmo.lab.common.interfaces.Command;
-import ru.itmo.lab.common.interfaces.IO_Handler;
-import ru.itmo.lab.common.interfaces.InvokerActions;
+import org.slf4j.LoggerFactory;
+import ru.itmo.lab.common.myExceptions.CommandException;
+import ru.itmo.server.ioHandlers.CommandResult;
+import ru.itmo.server.serverInterfaces.Command;
+import ru.itmo.server.serverInterfaces.CommandArgs;
+import ru.itmo.server.serverInterfaces.ExecuteResult;
+import ru.itmo.server.serverInterfaces.InvokerActions;
 
 import java.util.Comparator;
 
@@ -19,13 +23,28 @@ public class HelpCommand implements Command
     }
 
     @Override
-    public void execute( IO_Handler consol )
+    public ExecuteResult execute(CommandArgs args )
     {
-        consol.printInfo("Список всех возможных команд:\n" +
-                "--------------------------------------------------------------");
-        invoker.getCommands().values().stream()
-                .sorted(Comparator.comparing(Command::getName))
-                .forEach(cmd -> consol.printInfo(cmd.getName() + ": " + cmd.getDescription()));
+        try
+        {
+            StringBuilder result = new StringBuilder();
+            result.append("Список всех возможных команд:\n" +
+                    "--------------------------------------------------------------\n");
+            invoker.getCommands().values().stream()
+                    .sorted(Comparator.comparing(Command::getName))
+                    .forEach(cmd -> result.append(cmd.getName() + ": " + cmd.getDescription() + "\n"));
+            result.append("\n--------------------------------------------------------------\n");
+            return new CommandResult.Builder()
+                    .setSuccess( true )
+                    .setMessage( result.toString() )
+                    .buildCommandResult();
+        }
+        catch( Exception e )
+        {
+            String errorMessage = "Неизвестная ошибка: " + e.getMessage();
+            LoggerFactory.getLogger(HelpCommand.class).error(errorMessage);
+            throw new CommandException(errorMessage);
+        }
     }
 
     @Override

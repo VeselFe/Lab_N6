@@ -113,4 +113,16 @@ public class Request implements Serializable
             return this;
         }
     }
+
+    @Override
+    public String toString()
+    {
+        return  "cmd type: " + (commandType != null ? commandType : "null") +
+                "\narg: " + (argument != null ? argument : "null") +
+                "\nupdated field name: " + (updatedField != null ? updatedField.name() : "null") +
+                "\ngroup: " + (group != null ? "\n---------------------------------------" +
+                                group.getInformation() +
+                                "\n---------------------------------------" : "null") +
+                "\nadmin: " + (admin != null ? admin.getName() : "null");
+    }
 }

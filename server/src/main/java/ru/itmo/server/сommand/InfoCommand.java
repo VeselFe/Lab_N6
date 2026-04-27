@@ -1,8 +1,11 @@
 package ru.itmo.server.сommand;
 
-import ru.itmo.lab.common.interfaces.Command;
+import org.slf4j.LoggerFactory;
+import ru.itmo.server.serverInterfaces.Command;
+import ru.itmo.server.serverInterfaces.CommandArgs;
+import ru.itmo.server.serverInterfaces.ExecuteResult;
+import ru.itmo.server.ioHandlers.CommandResult;
 import ru.itmo.server.manager.collection.CollectionManager;
-import ru.itmo.lab.common.interfaces.IO_Handler;
 import ru.itmo.lab.common.myExceptions.CommandException;
 
 /**
@@ -17,11 +20,18 @@ public class InfoCommand implements Command
     }
 
     @Override
-    public void execute( IO_Handler consol )
+    public ExecuteResult execute( CommandArgs args )
     {
         if( CollInfo == null )
-            throw new CommandException("Не выбран элемент!");
-        consol.printInfo(CollInfo.getInfo());
+        {
+            String errorMessage = "Некорректные данные для ключа";
+            LoggerFactory.getLogger(InfoCommand.class).error(errorMessage);
+            throw new CommandException(errorMessage);
+        }
+        return new CommandResult.Builder()
+                .setSuccess( true )
+                .setMessage( CollInfo.getInfo() )
+                .buildCommandResult();
     }
     @Override
     public String getName()

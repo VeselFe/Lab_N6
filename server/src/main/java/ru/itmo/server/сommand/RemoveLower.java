@@ -1,11 +1,15 @@
 package ru.itmo.server.сommand;
 
-import ru.itmo.lab.common.interfaces.CommandWithKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.itmo.server.ioHandlers.CommandResult;
 import ru.itmo.server.manager.collection.CollectionManager;
 import ru.itmo.server.manager.collection.StudyGroupByStudentsComparator;
 import ru.itmo.lab.common.model.StudyGroup;
 import ru.itmo.lab.common.myExceptions.CommandException;
-import ru.itmo.lab.common.interfaces.IO_Handler;
+import ru.itmo.server.serverInterfaces.Command;
+import ru.itmo.server.serverInterfaces.CommandArgs;
+import ru.itmo.server.serverInterfaces.ExecuteResult;
 
 import java.util.List;
 import java.util.Map;
@@ -13,9 +17,11 @@ import java.util.Map;
 /**
  * Команда для удаления элементов коллекции с меньшим количеством студентов
  */
-public class RemoveLower implements CommandWithKey
+public class RemoveLower implements Command
 {
+    private final Logger logger = LoggerFactory.getLogger(RemoveLower.class);
     private final CollectionManager collection;
+    private String errorMessage;
     private Long Key;
     private StudyGroup choosenGroup;
 
@@ -25,26 +31,24 @@ public class RemoveLower implements CommandWithKey
     }
 
     @Override
-    public void getArgs( Long Args )
+    public ExecuteResult execute(CommandArgs args )
     {
         try
         {
-            Key = Long.valueOf( Args );
+            Key = Long.valueOf( args.getKey() );
             choosenGroup = collection.getStudyGroups().get(Key);
         }
         catch (IllegalArgumentException e)
         {
-            throw new CommandException("Неверно введен параметр: по данному ключу ничего не найдено");
+            errorMessage = "Неверно введен параметр: по данному ключу ничего не найдено";
+            logger.error(errorMessage);
+            throw new CommandException(errorMessage);
         }
-    }
-
-    @Override
-    public void execute( IO_Handler consol )
-    {
         if( choosenGroup == null )
         {
-            consol.printError("По данному ключу не найдено элементов!");
-            return;
+            errorMessage = "По данному ключу не найдено элементов!";
+            logger.error(errorMessage);
+            throw  new CommandException(errorMessage);
         }
 
         StudyGroupByStudentsComparator comparator = new StudyGroupByStudentsComparator();
@@ -56,14 +60,17 @@ public class RemoveLower implements CommandWithKey
         long count = removingList.size();
         removingList.forEach(key -> collection.getStudyGroups().remove(key));
 
+        CommandResult.Builder resBuilder = new CommandResult.Builder().setSuccess( true );
         if( count == 0 )
         {
-            consol.printInfo("Совпадений не найдено!");
+            resBuilder.setMessage("Совпадений не найдено!");
         }
         else
         {
-            consol.printInfo("Было найдено и удалено " + count + " элементов с меньшим количеством.");
+            resBuilder.setMessage("Было найдено и удалено " + count + " элементов с меньшим количеством.");
         }
+        return  resBuilder.setSortedCollection(collection.getSortedByNameCollection())
+                          .buildCommandResult();
     }
     @Override
     public String getName()

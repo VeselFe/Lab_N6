@@ -1,14 +1,17 @@
 package ru.itmo.server.сommand;
 
-import ru.itmo.lab.common.interfaces.CommandWithArgs;
+import org.slf4j.LoggerFactory;
+import ru.itmo.server.ioHandlers.CommandResult;
 import ru.itmo.server.manager.collection.CollectionManager;
 import ru.itmo.lab.common.myExceptions.CommandException;
-import ru.itmo.lab.common.interfaces.IO_Handler;
+import ru.itmo.server.serverInterfaces.Command;
+import ru.itmo.server.serverInterfaces.CommandArgs;
+import ru.itmo.server.serverInterfaces.ExecuteResult;
 
 /**
  * Команда для вывода элементов коллекции, отсортировав по началу названия элементов
  */
-public class FilterStartsWithName implements CommandWithArgs
+public class FilterStartsWithName implements Command
 {
     private final CollectionManager collection;
     private String tempName;
@@ -19,38 +22,33 @@ public class FilterStartsWithName implements CommandWithArgs
     }
 
     @Override
-    public void getArgs( String Args )
+    public ExecuteResult execute(CommandArgs args )
     {
-        try
-        {
-            tempName = Args;
-        }
-        catch (IllegalArgumentException e)
-        {
-            throw new CommandException("Неверно введен параметр: по данному ключу ничего не найдено");
-        }
-    }
-
-    @Override
-    public void execute( IO_Handler consol )
-    {
+        tempName = args.getStringArg();
         if( tempName == null || tempName.isEmpty() )
         {
-            consol.printError("Введеная подстрока пустая!");
-            return;
+            String errorMessage = "Введеная подстрока пустая!";
+            LoggerFactory.getLogger(FilterStartsWithName.class).error(errorMessage);
+            throw new CommandException(errorMessage);
         }
 
         var filteredGroups = collection.getStudyGroups().entrySet().stream()
                 .filter(entry -> entry.getValue().getName().startsWith(tempName))
                 .toList();
+        StringBuilder result = new StringBuilder();
         filteredGroups.forEach(group -> {
-            consol.printInfo(group.getKey() + ": " + group.getValue().getName());
-            consol.printInfo("Подробная информация о " + group.getKey() + "-ом элеменете коллеции:\n" + group.getValue().getInformation());
+            result.append(group.getKey() + ": " + group.getValue().getName());
+            result.append("Подробная информация о " + group.getKey() + "-ом элеменете коллеции:\n" + group.getValue().getInformation());
         });
         if( filteredGroups.isEmpty() )
         {
-            consol.printInfo("Не найдено ни одного элемента с именем, начинающимся со строки '" + tempName + "'!");
+            result.append("Не найдено ни одного элемента с именем, начинающимся со строки '" + tempName + "'!");
         }
+
+        return new CommandResult.Builder()
+                .setSuccess( true )
+                .setMessage( result.toString() )
+                .buildCommandResult();
     }
     @Override
     public String getName()

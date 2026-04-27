@@ -1,9 +1,12 @@
 package ru.itmo.server.сommand;
 
-import ru.itmo.lab.common.interfaces.Command;
+import ru.itmo.server.serverInterfaces.Command;
+import ru.itmo.server.serverInterfaces.CommandArgs;
+import ru.itmo.server.serverInterfaces.ExecuteResult;
+import ru.itmo.server.ioHandlers.CommandResult;
 import ru.itmo.server.manager.collection.CollectionManager;
 import ru.itmo.lab.common.model.StudyGroup;
-import ru.itmo.lab.common.interfaces.IO_Handler;
+
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
@@ -21,24 +24,28 @@ public class ShowCommand implements Command
     }
 
     @Override
-    public void execute( IO_Handler consol )
+    public ExecuteResult execute( CommandArgs args )
     {
-        String flag = "";
-        consol.printInfo("Элементы коллекции: ");
-        consol.printInfo("***************************************");
+        StringBuilder res = new StringBuilder();
+        res.append("Элементы коллекции: ");
+        res.append("***************************************");
         Set<Map.Entry<Long, StudyGroup>> collectionLikeSet = collection.entrySet();
         if( collectionLikeSet.isEmpty() )
         {
-            consol.printInfo("В колекции отсутствуют элементы!");
+            res.append("В колекции отсутствуют элементы!");
         }
         else
         {
             collectionLikeSet.stream().forEach(element -> {
-                consol.printInfo(element.getKey() + ": " + element.getValue().getName());
-                consol.printInfo("Подробная информация о " + element.getKey() + "-ом элеменете коллеции:\n" + element.getValue().getInformation());
+                res.append("\n\n" + element.getKey() + ": " + element.getValue().getName() + "\n");
+                res.append("Подробная информация о " + element.getKey() + "-ом элеменете коллеции:\n" + element.getValue().getInformation());
             });
         }
-        consol.printInfo("***************************************\n");
+        res.append("\n***************************************\n");
+        return new CommandResult.Builder()
+                .setSuccess( true )
+                .setMessage(res.toString())
+                .buildCommandResult();
     }
     @Override
     public String getName()

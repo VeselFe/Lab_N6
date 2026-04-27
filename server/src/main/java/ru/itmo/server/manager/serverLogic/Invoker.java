@@ -1,15 +1,12 @@
 package ru.itmo.server.manager.serverLogic;
 
-import ru.itmo.lab.common.interfaces.*;
-import ru.itmo.server.Server;
-import ru.itmo.server.manager.collection.CollectionManager;
-import ru.itmo.lab.common.model.Person;
-import ru.itmo.lab.common.model.StudyGroup;
+import org.slf4j.LoggerFactory;
+import ru.itmo.server.ioHandlers.CommandResult;
 import ru.itmo.lab.common.myExceptions.CommandException;
-import ru.itmo.lab.common.myRecords.UpdatedFieldDescriptor;
-import ru.itmo.server.serverInterfaces.ServerCommand;
-import ru.itmo.server.serverInterfaces.ServerInvokerActions;
-import ru.itmo.server.сommand.*;
+import ru.itmo.server.serverInterfaces.Command;
+import ru.itmo.server.serverInterfaces.CommandArgs;
+import ru.itmo.server.serverInterfaces.ExecuteResult;
+import ru.itmo.server.serverInterfaces.InvokerActions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,54 +15,14 @@ import java.util.Map;
  * Класс для регистрации, обработки выполнения, передачи аргументов командам
  *
  */
-public class Invoker implements ServerInvokerActions
+public class Invoker implements InvokerActions
 {
     /** хранит все используемые пользовательские команды    */
-    private final Map<String, Command> clientCommands;
-    private final Map<String, ServerCommand> serverCommands;
-    /** ссылка на обрабатываемую коллекцию    */
-    private final CollectionManager ManagersCollection;
-    /** обарботчик консоли    */
-    private IO_Handler ioHandler;
-    private OutputHandler outputHandler;
+    private final Map<String, Command> commands;
 
-    public Invoker( CollectionManager newManagersCollection )
+    public Invoker()
     {
-        ManagersCollection = newManagersCollection;
-        clientCommands = new HashMap<>();
-        serverCommands = new HashMap<>();
-        registerCommands();
-    }
-
-    @Override
-    public void initIOput( OutputHandler newOHandler )
-    {
-        outputHandler = newOHandler;
-    }
-
-    /**
-     * Инициализация всех пользовательских команд
-     */
-    private void registerCommands()
-    {
-        /// регистрируем все команды
-        addCommand("help", new HelpCommand(this));
-        addCommand("info", new InfoCommand(ManagersCollection));
-        addCommand("show", new ShowCommand(ManagersCollection));
-        addCommand("insert_element", new InsertElCommand(ManagersCollection));
-        addCommand("update_id", new UpdateIdCommand(ManagersCollection));
-        addCommand("remove_key", new RemoveCommand(ManagersCollection));
-        addCommand("clear", new ClearCommand(ManagersCollection));
-        addCommand("remove_greater", new RemoveGreater(ManagersCollection));
-        addCommand("remove_lower", new RemoveLower(ManagersCollection));
-        addCommand("remove_lower_key", new RomoveLowerKey(ManagersCollection));
-        addCommand("filter_by_semester_enum", new FilterBySemesterEnum(ManagersCollection));
-        addCommand("filter_starts_with_name", new FilterStartsWithName(ManagersCollection));
-        addCommand("print_ascending", new PrintAscending(ManagersCollection));
-
-        //addCommand("execute_script", new ExecuteScriptCommand(ManagersCollection));
-        addServerCommand("save", new SaveCommand(ManagersCollection, "SavedCollection.txt"));
-        addServerCommand("exit", new ExitCommand());
+        commands = new HashMap<>();
     }
 
     /**
@@ -77,109 +34,37 @@ public class Invoker implements ServerInvokerActions
     @Override
     public void addCommand( String name, Command newCommand )
     {
-        if ( clientCommands.containsKey(name) )
+        if ( commands.containsKey(name) )
         {
             throw new CommandException("Команда '" + name + "' уже существует");
         }
-        clientCommands.put(name, newCommand);
-    }
-    protected void addServerCommand(String name, ServerCommand newCommand )
-    {
-        if ( serverCommands.containsKey(name) )
-        {
-            throw new CommandException("Команда '" + name + "' уже существует");
-        }
-        serverCommands.put(name, newCommand);
+        commands.put(name, newCommand);
     }
 
     @Override
-    public void execute(String name,
-                        Long id,
-                        String arg,
-                        UpdatedFieldDescriptor updatedField,
-                        StudyGroup newGroup,
-                        Person newAdmin ) throws CommandException
+    public ExecuteResult execute(CommandArgs args ) throws CommandException
     {
-        if (name.trim().isEmpty())
+        Command cmd = commands.get(args.getCmdName());
+        if( cmd == null )
         {
-            throw new CommandException("Пустая команда");
+            CommandResult.Builder builder = new CommandResult.Builder();
+            return builder.setSuccess( false )
+                    .setMessage( "Неизвестная команда!" )
+                    .buildCommandResult();
         }
-        Command cmd = clientCommands.get(name);
-        if ( cmd == null )
-        {
-            throw new CommandException("Неизвестная команда: '" + name + "'");
-        }
+
         try
         {
-            if( cmd instanceof Updatable)
-            {
-                Updatable updateCmd = ((Updatable) cmd);
-                updateCmd.setArgument(arg);
-                updateCmd.setUpID(id);
-                updateCmd.setUpdatedPerson(newAdmin);
-                updateCmd.setUpdatedFieldName(updatedField);
-                cmd.execute(ioHandler);
-            }
-            if( cmd instanceof CommandWithKey)
-            {
-                if ( id == null )
-                {
-                    throw new CommandException("ID группы не определен");
-                }
-                ((CommandWithKey) cmd).getArgs( id );
-                cmd.execute(ioHandler);
-            }
-            else if( cmd instanceof CommandWithArgs)
-            {
-                String[] args = arg.trim().split("\\s+");
-                if( args.length == 1 )
-                {
-                    CommandWithArgs cmdArgs = (CommandWithArgs) cmd;
-                    cmdArgs.getArgs(args[0]);
-                    cmdArgs.execute(ioHandler);
-                }
-                else
-                {
-                    throw new IllegalArgumentException("Некорректный ввод аргументов команды (Ожидается ввод 1 аргумента)");
-                }
-            }
-            else
-            {
-                cmd.execute(ioHandler);
-            }
-        }
-        catch ( IllegalArgumentException e )
-        {
-            throw new IllegalArgumentException("Неверные аргументы: " + e.getMessage());
-        }
-        catch ( Exception e )
-        {
-            throw new CommandException("ошибка исполнения команды '" + name + "': " + e.getMessage());
-        }
-    }
-    @Override
-    public void executeServerCommand( String name )
-    {
-        if (name.trim().isEmpty())
-        {
-            throw new CommandException("Пустая команда");
-        }
-        ServerCommand serverCommand = serverCommands.get(name);
-        if( serverCommand == null )
-        {
-            throw new CommandException("Неизвестная команда: '" + name + "'");
-        }
-        if( outputHandler == null )
-        {
-            throw new CommandException("Не инициализирован канал для вывода технических сообщений!");
-        }
-        try
-        {
-            serverCommand.execute( outputHandler );
+            //LoggerFactory.getLogger(Invoker.class).info("Исполнение команды...");
+            return cmd.execute( args );
         }
         catch( Exception e )
         {
-            ioHandler.printError("Ошибка при попытке завершить работу сервера: " + e.getMessage());
+            LoggerFactory.getLogger(Invoker.class).error(e.getMessage());
+            return new CommandResult.Builder()
+                    .setSuccess( false )
+                    .setMessage("Ошибка при исполнении команды: " + e.getMessage())
+                    .buildCommandResult();
         }
     }
 
@@ -189,8 +74,5 @@ public class Invoker implements ServerInvokerActions
      * @return Map
      */
     @Override
-    public Map<String, Command> getCommands()
-    {
-        return clientCommands;
-    }
+    public Map<String, Command> getCommands() { return commands; }
 }

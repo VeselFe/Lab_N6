@@ -1,11 +1,11 @@
-package ru.itmo.lab.common.interfaces;
+package ru.itmo.server.serverInterfaces;
 
 /**
  * Интерфейс для класса пользовательской команды
  */
 public interface Command
 {
-    void execute( IO_Handler ioHandler );
+    ExecuteResult execute(CommandArgs args );
     String getName();
     String getDescription();
 }

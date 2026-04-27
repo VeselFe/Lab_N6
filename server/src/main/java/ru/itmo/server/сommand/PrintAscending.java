@@ -1,9 +1,11 @@
 package ru.itmo.server.сommand;
 
-import ru.itmo.lab.common.interfaces.Command;
+import ru.itmo.server.serverInterfaces.Command;
+import ru.itmo.server.serverInterfaces.CommandArgs;
+import ru.itmo.server.serverInterfaces.ExecuteResult;
+import ru.itmo.server.ioHandlers.CommandResult;
 import ru.itmo.server.manager.collection.CollectionManager;
 import ru.itmo.lab.common.model.StudyGroup;
-import ru.itmo.lab.common.interfaces.IO_Handler;
 
 import java.util.List;
 
@@ -19,20 +21,24 @@ public class PrintAscending implements Command
     }
 
     @Override
-    public void execute( IO_Handler consol )
+    public ExecuteResult execute( CommandArgs args )
     {
-        String flag = "";
-        consol.printInfo("Элементы коллекции в отсортированном порядке: ");
-        consol.printInfo("***************************************");
+        StringBuilder result = new StringBuilder();
+        result.append("Элементы коллекции в отсортированном порядке: ");
+        result.append("***************************************");
         List<StudyGroup> sortedGroups = collectionManager.getSortedCollection().stream()
                 .toList();
-        sortedGroups.forEach(group -> consol.printInfo(group.getInformation()));
+        sortedGroups.forEach(group -> result.append(group.getInformation()));
 
         if( sortedGroups.isEmpty() )
         {
-            consol.printInfo("В колекции отсутствуют элементы!");
+            result.append("В колекции отсутствуют элементы!");
         }
-        consol.printInfo("***************************************\n");
+        result.append("***************************************\n");
+        return new CommandResult.Builder()
+                .setSuccess( true )
+                .setMessage( result.toString() )
+                .buildCommandResult();
     }
     @Override
     public String getName()

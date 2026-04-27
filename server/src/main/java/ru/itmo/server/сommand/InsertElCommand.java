@@ -1,16 +1,21 @@
 package ru.itmo.server.сommand;
 
-import ru.itmo.lab.common.interfaces.CommandWithKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.itmo.server.ioHandlers.CommandResult;
 import ru.itmo.server.manager.collection.CollectionManager;
 import ru.itmo.lab.common.model.StudyGroup;
 import ru.itmo.lab.common.myExceptions.CreationException;
-import ru.itmo.lab.common.interfaces.IO_Handler;
+import ru.itmo.server.serverInterfaces.Command;
+import ru.itmo.server.serverInterfaces.CommandArgs;
+import ru.itmo.server.serverInterfaces.ExecuteResult;
 
 /**
  * Команда для добавления нового элемента в коллекции
  */
-public class InsertElCommand implements CommandWithKey
+public class InsertElCommand implements Command
 {
+    private Logger logger = LoggerFactory.getLogger(InsertElCommand.class);
     private final CollectionManager collection;
     private Long Key;
 
@@ -20,34 +25,39 @@ public class InsertElCommand implements CommandWithKey
     }
 
     @Override
-    public void getArgs( Long Args )
+    public ExecuteResult execute(CommandArgs args )
     {
         try
         {
-            Key = Long.valueOf( Args );
+            Key = Long.valueOf( args.getKey() );
         }
-        catch (NumberFormatException e)
+        catch( NumberFormatException e )
         {
-            throw new CreationException("Некорректные данные для ключа");
+            String errorMessage = "Некорректные данные для ключа";
+            logger.error( errorMessage );
+            throw new CreationException(errorMessage);
         }
-    }
-
-    @Override
-    public void execute( IO_Handler consol )
-    {
         try
         {
-            if(collection.getStudyGroups().get(Key) != null)
+            if( collection.getStudyGroups().get(Key) != null )
             {
-                throw new CreationException("Элемент с таким ключем уже существует");
+                String errorMessage = "Элемент с таким ключем уже существует";
+                logger.error( errorMessage );
+                throw new CreationException(errorMessage);
             }
-            StudyGroup newGroup = consol.readNewStudyGroup();
+            StudyGroup newGroup = args.getGroup();
             collection.addElement(Key, newGroup);
-            consol.printInfo("Колекция: Добавлен новый элемент!");
+            logger.info( "Колекция: Добавлен новый элемент!" );
+            return new CommandResult.Builder()
+                    .setSuccess( true )
+                    .setMessage( "Колекция: Добавлен новый элемент!" )
+                    .buildCommandResult();
         }
-        catch (Exception e)
+        catch( Exception e )
         {
-            consol.printError("*Ошибка при создании группы*\n" + e.getMessage());
+            String errorMessage = "Ошибка при создании группы:\n" + e.getMessage();
+            logger.error( errorMessage );
+            throw new CreationException(errorMessage);
         }
     }
 

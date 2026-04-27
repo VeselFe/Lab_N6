@@ -1,21 +1,21 @@
 package ru.itmo.server.manager.serverLogic;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.itmo.lab.common.interfaces.OutputHandler;
+import ru.itmo.server.ioHandlers.CommandResult;
 import ru.itmo.server.manager.collection.CollectionManager;
 import ru.itmo.server.manager.collection.fileManagement.GroupsFileManager;
 import ru.itmo.lab.common.myExceptions.FileManagerException;
-import ru.itmo.lab.common.interfaces.IO_Handler;
-import ru.itmo.server.serverInterfaces.ServerCommand;
+import ru.itmo.server.serverInterfaces.Command;
+import ru.itmo.server.serverInterfaces.CommandArgs;
+import ru.itmo.server.serverInterfaces.ExecuteResult;
 
 
 /**
  * Команда для сохранении коллекции в файл
  */
-public class SaveCommand implements ServerCommand
+public class SaveCommand implements Command
 {
-    public static final Logger logger = LoggerFactory.getLogger(SaveCommand.class);
+    private String message;
     private final CollectionManager collection;
     private final String fileName;
     private final GroupsFileManager fileManager;
@@ -28,20 +28,21 @@ public class SaveCommand implements ServerCommand
     }
 
     @Override
-    public void execute( OutputHandler consol )
+    public ExecuteResult execute(CommandArgs args )
     {
         try
         {
             fileManager.save( collection.getStudyGroups() );
-            logger.info("Коллекция успешно соранена в файл.");
+            message = "Коллекция успешно сохранена в файл.";
+            LoggerFactory.getLogger(SaveCommand.class).info(message);
+            return new CommandResult.Builder()
+                    .setSuccess(true)
+                    .setMessage(message)
+                    .buildCommandResult();
         }
         catch ( Exception e )
         {
             throw new FileManagerException("ошибка сохранения коллекции в файл '" + fileName + "'");
-        }
-        finally
-        {
-            consol.printInfo("Коллекция успешно сохранена!");
         }
     }
     @Override
