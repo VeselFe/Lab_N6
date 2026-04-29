@@ -1,4 +1,4 @@
-package ru.itmo.server.manager.collection.fileManagement;
+package ru.itmo.lab.common.fileManagement;
 
 import java.util.Hashtable;
 

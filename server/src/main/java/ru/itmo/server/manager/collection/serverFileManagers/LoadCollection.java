@@ -1,10 +1,11 @@
-package ru.itmo.server.manager.collection.fileManagement;
+package ru.itmo.server.manager.collection.serverFileManagers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.itmo.lab.common.interfaces.OutputHandler;
-import ru.itmo.server.manager.collection.CollectionManager;
 import ru.itmo.lab.common.model.StudyGroup;
+import ru.itmo.server.manager.collection.CollectionManager;
+import ru.itmo.lab.common.fileManagement.GroupsFileManager;
 
 import java.util.Hashtable;
 

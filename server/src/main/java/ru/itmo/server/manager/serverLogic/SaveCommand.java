@@ -3,7 +3,7 @@ package ru.itmo.server.manager.serverLogic;
 import org.slf4j.LoggerFactory;
 import ru.itmo.server.ioHandlers.CommandResult;
 import ru.itmo.server.manager.collection.CollectionManager;
-import ru.itmo.server.manager.collection.fileManagement.GroupsFileManager;
+import ru.itmo.lab.common.fileManagement.GroupsFileManager;
 import ru.itmo.lab.common.myExceptions.FileManagerException;
 import ru.itmo.server.serverInterfaces.Command;
 import ru.itmo.server.serverInterfaces.CommandArgs;

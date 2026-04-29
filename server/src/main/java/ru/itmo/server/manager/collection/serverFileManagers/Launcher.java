@@ -1,8 +1,8 @@
-package ru.itmo.server.manager.collection.fileManagement;
+package ru.itmo.server.manager.collection.serverFileManagers;
 
 import ru.itmo.lab.common.interfaces.OutputHandler;
-import ru.itmo.server.manager.collection.CollectionManager;
 import ru.itmo.lab.common.myExceptions.FileManagerException;
+import ru.itmo.server.manager.collection.CollectionManager;
 
 /**
  * Класс для загрузки коллекции из файла по названию Пользователя
