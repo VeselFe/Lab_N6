@@ -2,9 +2,7 @@ package ru.itmo.server.ioHandlers;
 
 import ru.itmo.lab.common.interfaces.InputHandler;
 import ru.itmo.lab.common.interfaces.OutputHandler;
-import ru.itmo.lab.common.model.Person;
-import ru.itmo.lab.common.model.StudyGroup;
-import ru.itmo.lab.common.terminal.GenericConsoleHandler;
+import ru.itmo.lab.common.terminal.AbstractConsoleHandler;
 import ru.itmo.lab.common.interfaces.IO_Handler;
 import ru.itmo.server.manager.serverLogic.Invoker;
 
@@ -13,7 +11,7 @@ import java.util.Scanner;
 /**
  * Консольный обработчик вывода для лабораторной работы №6.
  *
- * <p>Реализует интерфейс {@link IO_Handler} и расширяет {@link GenericConsoleHandler}
+ * <p>Реализует интерфейс {@link IO_Handler} и расширяет {@link AbstractConsoleHandler}
  * для обработки команд интерактивного режима работы программы.</p>
  *
  * <p><b>Основное назначение:</b></p>
@@ -22,7 +20,7 @@ import java.util.Scanner;
  *   <li>Форматированный вывод информационных сообщений, ошибок и запросов</li>
  * </ul>
  */
-public class ServerConsoleHandler extends GenericConsoleHandler<Invoker>
+public class ServerConsoleHandler extends AbstractConsoleHandler
         implements InputHandler, OutputHandler
 {
     private Scanner scanner = new Scanner(System.in);

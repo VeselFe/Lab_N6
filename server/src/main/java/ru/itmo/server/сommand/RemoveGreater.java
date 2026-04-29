@@ -38,6 +38,12 @@ public class RemoveGreater implements Command
             Key = Long.valueOf( args.getKey() );
             choosenGroup = collection.getStudyGroups().get(Key);
         }
+        catch( NullPointerException e )
+        {
+            errorMessage = "Неверно введен параметр: по данному ключу ничего не найдено";
+            logger.error(errorMessage);
+            throw new CommandException(errorMessage);
+        }
         catch (IllegalArgumentException e)
         {
             errorMessage = "Неверно введен параметр: по данному ключу ничего не найдено";

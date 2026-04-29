@@ -11,17 +11,25 @@ import ru.itmo.lab.common.myRecords.UpdatedFieldDescriptor;
 
 public class RequestCreator 
 {
-    private IO_Handler console;
+    private final IO_Handler console;
+    private final UpdateReader updateReader;
     public RequestCreator( IO_Handler newIOHandler )
     {
         console = newIOHandler;
+        updateReader = new UpdateReader( console );
     }
     public Request buildRequest( String input )
     {
-        if (input.trim().isEmpty())
+        if( input.trim().isEmpty() )
         {
             console.printError("Пустая команда");
             return null;
+        }
+        if( input.trim().toLowerCase().equals("exit") )
+        {
+            return new Request.Builder()
+                    .setCommandType("exit")
+                    .buildRequest();
         }
 
         String[] args = input.trim().split("\\s+");
@@ -44,47 +52,12 @@ public class RequestCreator
                 case "update_id" -> {
                     if( args.length != 2 ) throw new CommandException("Ошибка получения аргументов: <команда> <аргумент>");
                     Long id = Long.parseLong(args[1]);
-                    console.printInfo("Какой параметр Вы хотите обновить?\n" +
-                            "===========================================");
-                    Lab5FieldDescriptor.UPDATED_FIELDS.stream()
-                            .map(UpdatedFieldDescriptor::name)
-                            .forEach(fieldName -> console.printInfo(fieldName));
-                    console.printInfo("===========================================");
-                    console.printRequest("Введите название параметра: ");
-                    String updated_name = console.readline().trim();
 
-                    if( updated_name.trim().isEmpty() )
-                    {
-                        throw new CommandException("Поле ввода пусто!");
-                    }
-                    updated_name = updated_name.toLowerCase();
-                    for(UpdatedFieldDescriptor element : Lab5FieldDescriptor.UPDATED_FIELDS)
-                    {
-                        if( updated_name.toLowerCase().equals(element.name().toLowerCase()) )
-                        {
-                            if( updated_name.equals("group admin") )
-                            {
-                                console.printInfo(element.request());
-                                // Создание нового админа
-                                Person newAdmin = console.readPerson();
-                                return new Request.Builder()
-                                        .setCommandType(name)
-                                        .setID(id)
-                                        .setPerson(newAdmin)
-                                        .setUpdatedField(element)
-                                        .buildRequest();
-                            }
-                            console.printRequest(element.request());
-                            String value = console.readline().trim();
+                    Request.Builder requestBuilder = new Request.Builder()
+                            .setCommandType(name)
+                            .setID(id);
 
-                            return new Request.Builder()
-                                    .setCommandType(name)
-                                    .setArgument(value)
-                                    .setUpdatedField(element)
-                                    .setID(id)
-                                    .buildRequest();
-                        }
-                    }
+                    return updateReader.readUpdateField( requestBuilder ).buildRequest();
                 }
                 default -> {
                     Commands cmd = Commands.find(name);
@@ -93,21 +66,24 @@ public class RequestCreator
                     clientRequestBuilder.setCommandType(name);
                     if( args.length == 2 )
                     {
-                        if(cmd.getArgType().equals("long"))
+                        if( cmd.haveArguments() )
                         {
-                            try
+                            if(cmd.getArgType().equals("long"))
                             {
-                                Long id = Long.parseLong( args[1] );
-                                clientRequestBuilder.setID(id);
+                                try
+                                {
+                                    Long id = Long.parseLong( args[1] );
+                                    clientRequestBuilder.setID(id);
+                                }
+                                catch( NumberFormatException e )
+                                {
+                                    clientRequestBuilder.setArgument(args[1]);
+                                }
                             }
-                            catch( NumberFormatException e )
+                            else
                             {
                                 clientRequestBuilder.setArgument(args[1]);
                             }
-                        }
-                        else
-                        {
-                            clientRequestBuilder.setArgument(args[1]);
                         }
                     }
                     clientRequestBuilder.setCommandType(name);
@@ -115,7 +91,6 @@ public class RequestCreator
                     return clientRequestBuilder.buildRequest();
                 }
             }
-            return null;
         }
         catch( IllegalArgumentException e )
         {

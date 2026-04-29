@@ -75,7 +75,7 @@ public class RemoveLower implements Command
     @Override
     public String getName()
     {
-        return "remove_lower_key { key }";
+        return "remove_lower { key }";
     }
     @Override
     public String getDescription()

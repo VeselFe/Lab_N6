@@ -2,10 +2,16 @@ package ru.itmo.client;
 
 import ru.itmo.client.clientTerminal.ClientConsoleHandler;
 import ru.itmo.client.network.NetworkManager;
+import ru.itmo.lab.common.commonNet.Request;
+import ru.itmo.lab.common.commonNet.Response;
+import ru.itmo.lab.common.interfaces.IO_Handler;
+import ru.itmo.lab.common.myExceptions.ConnectionException;
+import ru.itmo.lab.common.myExceptions.ResponseException;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
+import java.util.Stack;
 
 public class Client
 {
@@ -16,20 +22,56 @@ public class Client
     public static void main(String[] args)
     {
         ClientConsoleHandler console = new ClientConsoleHandler();
-        console.initRequestCreator( new ClientConsoleHandler() );
+        console.initRequestCreator( console );
+//        Stack<IO_Handler> ioHandlerStack = new Stack<>();
 
         boolean exit = false;
         while( !exit )
         {
+//            IO_Handler currentHandler = ioHandlerStack.peek();
+//            if( currentHandler instanceof )
             try( SocketChannel channel = connectToServer() )
             {
                 if (channel != null)
                 {
                     NetworkManager networkManager = new NetworkManager(channel);
-                    console.setProvider(networkManager);
                     console.welcomMessage();
 
-                    exit = console.executing();
+                    Request request = console.createRequest();
+                    try
+                    {
+                        if( request != null )
+                        {
+                            networkManager.network(request);
+                            String serverResponse = networkManager.getServerResponse();
+                            if( !request.getCommandType().equals("exit") )
+                            {
+                                console.printInfo(serverResponse);
+                            }
+                            else
+                            {
+                                console.printInfo("Соединение успешно завершено!");
+                                exit = true;
+                            }
+                        }
+                        else
+                        {
+                            console.printError("Ошибка генерации запроса. Запрос не отправлен!");
+                        }
+                    }
+                    catch( ConnectionException e )
+                    {
+                        throw new ConnectionException(e.getMessage());
+                    }
+                    catch( ResponseException e )
+                    {
+                        console.printError(e.getMessage());
+                    }
+                    catch( Exception e )
+                    {
+                        console.printError("ошибка при попытке отправки запроса на сервер. " + e.getMessage());
+                    }
+
                     if (exit) break;
                 }
             }

@@ -49,7 +49,7 @@ public class NetworkManager
         }
     }
 
-    public String getServerResponse( boolean printCollection ) throws IOException, ClassNotFoundException
+    public String getServerResponse() throws IOException, ResponseException
     {
         try
         {
@@ -58,7 +58,7 @@ public class NetworkManager
             String responseMessage = serverResponse.getMessage();
             List<StudyGroup> responeCollection = serverResponse.getCollection();
             StringBuilder printedCollection = new StringBuilder();
-            if(printCollection)
+            if( serverResponse.getCollection() != null )
             {
                 printedCollection.append("\nКоллекция после выполнения команды:\n");
                 for (StudyGroup element : responeCollection)
