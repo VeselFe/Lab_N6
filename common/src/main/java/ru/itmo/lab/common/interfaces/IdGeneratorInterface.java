@@ -10,5 +10,5 @@ public interface IdGeneratorInterface
      * Генерирует следующий уникальный ID.
      * @return уникальный long ID
      */
-    public long generateUniqueId();
+    long generateUniqueId();
 }

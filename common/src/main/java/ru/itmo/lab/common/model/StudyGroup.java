@@ -42,7 +42,6 @@ public class StudyGroup implements Comparable<StudyGroup>, Serializable
     private Person groupAdmin;
     /** Генератор уникального ID группы.  */
     static private IdGeneratorInterface idGenerator;
-
     /**
      * Устанавливает ID и текущую дату создания автоматически.
      * Копирует все поля из переданного "строителя".
@@ -96,8 +95,6 @@ public class StudyGroup implements Comparable<StudyGroup>, Serializable
          */
         public StudyGroup build()
         {
-            if (idGenerator != null) this.id = idGenerator.generateUniqueId();
-
             if(name.isEmpty() || coordinates == null || studentsCount == null || shouldBeExpelled == null || formOfEducation == null || semesterEnum == null || groupAdmin == null)
             {
                 throw new CreationException("Не все поля заполнены!");

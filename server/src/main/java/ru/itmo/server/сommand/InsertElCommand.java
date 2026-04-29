@@ -46,6 +46,7 @@ public class InsertElCommand implements Command
                 throw new CreationException(errorMessage);
             }
             StudyGroup newGroup = args.getGroup();
+
             collection.addElement(Key, newGroup);
             logger.info( "Колекция: Добавлен новый элемент!" );
             return new CommandResult.Builder()
