@@ -16,9 +16,9 @@ public class RequestCreator
     public RequestCreator( IO_Handler newIOHandler )
     {
         console = newIOHandler;
-        updateReader = new UpdateReader( console );
+        updateReader = new UpdateReader();
     }
-    public Request buildRequest( String input )
+    public Request buildRequest( String input, IO_Handler intputHandler )
     {
         if( input.trim().isEmpty() )
         {
@@ -40,9 +40,9 @@ public class RequestCreator
             switch (name)
             {
                 case "insert_element" -> {
-                    if( args.length != 2 ) throw new CommandException("Ошибка получения аргументов: <команда> <аргумент");
+                    if( args.length != 2 ) throw new CommandException("Ошибка получения аргументов: <команда> <аргумент>");
                     Long id = Long.parseLong(args[1]);
-                    StudyGroup newGroup = console.readNewStudyGroup();
+                    StudyGroup newGroup = intputHandler.readNewStudyGroup();
                     return new Request.Builder()
                             .setCommandType(name)
                             .setID(id)
@@ -57,7 +57,7 @@ public class RequestCreator
                             .setCommandType(name)
                             .setID(id);
 
-                    return updateReader.readUpdateField( requestBuilder ).buildRequest();
+                    return updateReader.readUpdateField( requestBuilder, intputHandler ).buildRequest();
                 }
                 default -> {
                     Commands cmd = Commands.find(name);

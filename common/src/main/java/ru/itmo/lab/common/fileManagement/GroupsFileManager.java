@@ -255,15 +255,15 @@ public class GroupsFileManager extends FileManager<Long, StudyGroup>
         }
         catch( AccessDeniedException e )
         {
-            throw new FileManagerException("нет доступа к файлу! " + e);
+            throw new FileManagerException("нет доступа к файлу! " + e.getMessage());
         }
         catch( IOException e )
         {
-            throw new FileManagerException("Ошибка чтения файла - '" + e + "'");
+            throw new FileManagerException("Файл не найден");
         }
         catch( Exception e )
         {
-            throw new FileManagerException("Ошибка десериализации: " + e);
+            throw new FileManagerException("Ошибка десериализации: " + e.getMessage());
         }
 
         return commands;

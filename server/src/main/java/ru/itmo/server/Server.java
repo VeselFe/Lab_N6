@@ -26,7 +26,7 @@ import ru.itmo.server.сommand.*;
 public class Server
 {
     public static final Logger logger = LoggerFactory.getLogger(Server.class);
-    private static final int port = 8080;
+    private static final int port = 6060;
     private static Invoker serverInvoker;
 
     public static void main(String[] args)

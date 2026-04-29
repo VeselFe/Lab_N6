@@ -1,60 +1,83 @@
 package ru.itmo.client.FileHandler;
 
+import ru.itmo.lab.common.fileManagement.GroupsFileManager;
 import ru.itmo.lab.common.interfaces.IO_Handler;
+import ru.itmo.lab.common.model.Person;
+import ru.itmo.lab.common.model.StudyGroup;
+import ru.itmo.lab.common.myExceptions.CreationException;
+import ru.itmo.client.clientTerminal.PersonReader;
+import ru.itmo.client.clientTerminal.StudyGroupReader;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
-public class ScriptHandler //implements IO_Handler
+public class ScriptHandler implements IO_Handler
 {
     private String fileName;
-    private static List<String> openedFiles = new ArrayList<>();
-    private String scriptArg;
+    private int strIndex = 0;
+    private final List<String> fileStrings;
+    private static Set<Path> openedFiles = new HashSet<>();
 
-    public ScriptHandler()
-    {}
+    public ScriptHandler( String fileName ) throws IOException
+    {
+        this.fileName = fileName;
+        Path path = Paths.get(fileName).toAbsolutePath().normalize();
 
+        if( openedFiles.contains(path) )
+        {
+            throw new IOException("Обнаружена попытка рекурсивного запуска скрипта '" + fileName + "'");
+        }
 
-//    @Override
-//    public void execute( IO_Handler consol )
-//    {
-//        List<String> commands = new GroupsFileManager( fileName ).loadScript();
-//        openedFiles.add( fileName );
-//        consol.printInfo("Обнаружено " + commands.size() + "строк в скрипте");
-//        consol.printInfo(" --- Выполнение скрипта ---");
-//
-//        Invoker scriptInvoker = new Invoker( collection );
-//        scriptInvoker.initIOput( consol );
-//        for(String command : commands)
-//        {
-//            if(command.trim().startsWith("execute_script"))
-//            {
-//                scriptArg = command.substring(15).trim();
-//                try
-//                {
-//                    Path newPath = Paths.get(scriptArg).toAbsolutePath().normalize();
-//                    for( String openedFile : openedFiles )
-//                    {
-//                        Path openedFilePath = Paths.get(openedFile).toAbsolutePath().normalize();
-//                        if( Files.isSameFile(openedFilePath, newPath) )
-//                        {
-//                            consol.printError("обнаружена попытка рекурсивного запуска скрипта '" + scriptArg + "'");
-//                            openedFiles.remove(fileName);
-//                            return;
-//                        }
-//                    }
-//                }
-//                catch( IOException e )
-//                {
-//                    throw new FileManagerException("Возникла ошибка при проверке пути скрипта '" + scriptArg + "'");
-//                }
-//            }
-//
-//            scriptInvoker.executeCommand( command );
-//        }
-//        openedFiles.remove(fileName);
-//        consol.printInfo(" --- Скрипт '" + fileName + "' выполнен ---");
-//    }
+        this.fileStrings = new GroupsFileManager( fileName ).loadScript();
+        openedFiles.add(path);
+    }
 
+    @Override
+    public String readline()
+    {
+        if( hasNext() )
+            return fileStrings.get( strIndex++ );
+        return null;
+    }
+
+    public boolean hasNext() { return  strIndex < fileStrings.size(); }
+
+    public void close()
+    {
+        openedFiles.remove(Paths.get(fileName).toAbsolutePath().normalize());
+    }
+
+    @Override
+    public Person readPerson()
+    {
+        try
+        {
+            return new PersonReader(this).readPerson();
+        }
+        catch( Exception e )
+        {
+            throw new CreationException("Скрипт '" + fileName + "' содержит некорректные данные для инициализации админа: \n" + e.getMessage());
+        }
+    }
+    @Override
+    public StudyGroup readNewStudyGroup()
+    {
+        try
+        {
+            return new StudyGroupReader(this).readStudygroup();
+        }
+        catch( Exception e )
+        {
+            throw new CreationException("Скрипт '" + fileName + "' содержит некорректные данные для инициализации группы: \n" + e.getMessage());
+        }
+    }
+    @Override
+    public void printInfo( String messege ) { messege = null; }
+    @Override
+    public void printRequest( String request ) { request = null; }
+    @Override
+    public void printError( String messege ) { messege = null; }
 }
 

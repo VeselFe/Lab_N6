@@ -9,13 +9,11 @@ import ru.itmo.lab.common.myRecords.UpdatedFieldDescriptor;
 
 public class UpdateReader
 {
-    private final IO_Handler console;
-    public UpdateReader( IO_Handler console )
-    {
-        this.console = console;
-    }
+    private IO_Handler console;
+    public UpdateReader()
+    {    }
 
-    public Request.Builder readUpdateField( Request.Builder requstBuilder ) throws CommandException
+    public Request.Builder readUpdateField( Request.Builder requstBuilder, IO_Handler console ) throws CommandException
     {
         console.printInfo("Какой параметр Вы хотите обновить?\n" +
                 "===========================================");

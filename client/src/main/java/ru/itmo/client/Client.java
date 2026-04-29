@@ -16,20 +16,17 @@ import java.util.Stack;
 public class Client
 {
     private static final String host = "localhost";
-    private static final int port = 8080;
+    private static final int port = 6060;
     private static final int connectionDelay = 5000;
 
     public static void main(String[] args)
     {
         ClientConsoleHandler console = new ClientConsoleHandler();
         console.initRequestCreator( console );
-//        Stack<IO_Handler> ioHandlerStack = new Stack<>();
 
         boolean exit = false;
         while( !exit )
         {
-//            IO_Handler currentHandler = ioHandlerStack.peek();
-//            if( currentHandler instanceof )
             try( SocketChannel channel = connectToServer() )
             {
                 if (channel != null)
@@ -80,6 +77,7 @@ public class Client
                 System.out.println("Ошибка при работе приложения: " + e.getMessage());
             }
         }
+        console.close();
     }
 
     private static SocketChannel connectToServer()

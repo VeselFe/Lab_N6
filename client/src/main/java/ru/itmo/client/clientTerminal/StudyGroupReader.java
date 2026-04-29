@@ -1,5 +1,6 @@
-package ru.itmo.lab.common.terminal;
+package ru.itmo.client.clientTerminal;
 
+import ru.itmo.client.FileHandler.ScriptHandler;
 import ru.itmo.lab.common.interfaces.IO_Handler;
 import ru.itmo.lab.common.model.StudyGroup;
 import ru.itmo.lab.common.myExceptions.CreationException;
@@ -33,6 +34,7 @@ public class StudyGroupReader
                 {
                     reader.printRequest(field.request());
                     input = reader.readline();
+                    input = input.trim();
                     switch (field.name().toLowerCase())
                     {
                         case "name" -> groupGenerator.setName(input);
@@ -47,6 +49,10 @@ public class StudyGroupReader
                 }
                 catch (Exception e)
                 {
+                    if (reader instanceof ScriptHandler)
+                    {
+                        throw new CreationException("Ошибка валидации в скрипте для поля " + field.name() + ": " + e.getMessage());
+                    }
                     reader.printError(e.getMessage() + "\nПопробуйте снова ввести");
                 }
             } while (true);

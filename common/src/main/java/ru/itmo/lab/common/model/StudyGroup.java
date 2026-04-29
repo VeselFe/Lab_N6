@@ -307,14 +307,15 @@ public class StudyGroup implements Comparable<StudyGroup>, Serializable
         {
             if (newStrStudCount == null || newStrStudCount.trim().isEmpty())
             {
-                throw new CreationException("Некорректные данные для создания: поле 'Количество студентов' некорректно");
+                throw new CreationException("Некорректные данные для создания: поле 'Количество студентов' некорректно(" + newStrStudCount + ")");
             }
 
             Integer newStudCount = null;
             try
             {
-                newStudCount = Integer.valueOf(newStrStudCount);
-            } catch (NumberFormatException e) { throw new CreationException("Некорректные данные для создания: поле 'Количество студентов' некорректно"); }
+                newStudCount = Integer.valueOf(newStrStudCount.trim());
+            }
+            catch (NumberFormatException e) { throw new CreationException("Некорректные данные для создания: поле 'Количество студентов' некорректно('" + newStudCount + "') (ParseData)"); }
             if ( newStudCount <= 0 ) { throw new CreationException("Некорректные данные для создания: поле 'Количество студентов' некорректно: Значение должно быть больше нуля");}
 
             return newStudCount;
@@ -328,7 +329,7 @@ public class StudyGroup implements Comparable<StudyGroup>, Serializable
             Long newShBeExp = null;
             try
             {
-                newShBeExp = Long.valueOf(newStrShBeExp);
+                newShBeExp = Long.valueOf(newStrShBeExp.trim());
             } catch (NumberFormatException e) { throw new CreationException("Некорректные данные для создания: поле 'Количество студентов на отчисление' некорректно"); }
             if ( newShBeExp <= 0 ) { throw new CreationException("Некорректные данные для создания: поле 'Количество студентов на отчисление' некорректно: Значение должно быть больше нуля");}
 
@@ -344,7 +345,7 @@ public class StudyGroup implements Comparable<StudyGroup>, Serializable
             FormOfEducation newForm = null;
             try
             {
-                newForm = FormOfEducation.valueOf(newStrForm.toUpperCase());
+                newForm = FormOfEducation.valueOf(newStrForm.toUpperCase().trim());
                 return newForm;
             }
             catch (IllegalArgumentException e)
@@ -362,7 +363,7 @@ public class StudyGroup implements Comparable<StudyGroup>, Serializable
             Semester newSem = null;
             try
             {
-                newSem = Semester.valueOf(newStrSem.toUpperCase());
+                newSem = Semester.valueOf(newStrSem.toUpperCase().trim());
                 return newSem;
             }
             catch (IllegalArgumentException e)
@@ -381,7 +382,7 @@ public class StudyGroup implements Comparable<StudyGroup>, Serializable
         {
             if ( newStudCount == null || newStudCount <= 0 )
             {
-                throw new CreationException("Некорректные данные для создания: поле 'Количество студентов' некорректно");
+                throw new CreationException("Некорректные данные для создания: поле 'Количество студентов' некорректно('" + newStudCount + "')");
             }
         }
         public static void validateLongShouldBeExpelled( Long newShBeExp )

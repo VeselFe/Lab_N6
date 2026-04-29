@@ -1,9 +1,10 @@
-package ru.itmo.lab.common.terminal;
+package ru.itmo.client.clientTerminal;
 
 import ru.itmo.lab.common.interfaces.IO_Handler;
 import ru.itmo.lab.common.model.Person;
 import ru.itmo.lab.common.myExceptions.CreationException;
 import ru.itmo.lab.common.myRecords.FieldDescriptor;
+import ru.itmo.client.FileHandler.ScriptHandler;
 
 import static ru.itmo.lab.common.myRecords.Lab5FieldDescriptor.NEW_PERSON_FIELDS;
 
@@ -48,6 +49,10 @@ public class PersonReader
                     }
                     catch ( Exception e )
                     {
+                        if (reader instanceof ScriptHandler)
+                        {
+                            throw new CreationException("Ошибка валидации в скрипте для поля " + field.name() + ": " + e.getMessage());
+                        }
                         reader.printError(e.getMessage() + "\nПопробуйте снова ввести");
                     }
                 } while (true);

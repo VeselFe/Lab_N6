@@ -117,7 +117,7 @@ public class UpdateIdCommand implements Command
         }
         catch( InvocationTargetException e )
         {
-            errorMessage = "Ошибка при валидации данных: " + e.getCause();
+            errorMessage = "Ошибка при валидации данных: " + e.getMessage();
             logger.error(errorMessage);
             throw new CommandException(errorMessage);
         }

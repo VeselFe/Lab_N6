@@ -137,6 +137,7 @@ public class Person implements Serializable
         }
         public static void validatePassport( String newPassp )
         {
+            newPassp = newPassp.trim();
             if (newPassp != null && !newPassp.isEmpty() && newPassp.trim().length() < 8)
             {
                 throw new CreationException("Некорректные данные для создания: поле 'паспорт' некорректно: '" + newPassp + "' - должно быть больше 8 цифр");
@@ -164,7 +165,7 @@ public class Person implements Serializable
             java.time.LocalDateTime newBirthday = null;
             try
             {
-                newBirthday = LocalDateTime.parse(strBirthday);
+                newBirthday = LocalDateTime.parse(strBirthday.trim());
                 return newBirthday;
             }
             catch (java.time.format.DateTimeParseException e)
@@ -177,7 +178,7 @@ public class Person implements Serializable
             float newWeight;
             try
             {
-                newWeight = Float.valueOf(newStrWeight);
+                newWeight = Float.valueOf(newStrWeight.trim());
                 if (newWeight <= 0)
                 {
                     throw new CreationException("Некорректные данные для создания: значения поля 'вес' должнобыть больше 0!");
@@ -197,7 +198,7 @@ public class Person implements Serializable
             Country newNation = null;
             try
             {
-                newNation = Country.valueOf(newStrNation.toUpperCase());
+                newNation = Country.valueOf(newStrNation.toUpperCase().trim());
                 return newNation;
             }
             catch (IllegalArgumentException e)

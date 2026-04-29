@@ -25,7 +25,7 @@ public class PrintAscending implements Command
     {
         StringBuilder result = new StringBuilder();
         result.append("Элементы коллекции в отсортированном порядке: ");
-        result.append("***************************************");
+        result.append("***************************************\n");
         List<StudyGroup> sortedGroups = collectionManager.getSortedCollection().stream()
                 .toList();
         sortedGroups.forEach(group -> result.append(group.getInformation()));
@@ -34,7 +34,7 @@ public class PrintAscending implements Command
         {
             result.append("В колекции отсутствуют элементы!");
         }
-        result.append("***************************************\n");
+        result.append("\n***************************************\n");
         return new CommandResult.Builder()
                 .setSuccess( true )
                 .setMessage( result.toString() )
